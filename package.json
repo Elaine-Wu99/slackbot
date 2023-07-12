@@ -1,0 +1,16 @@
+{
+  "name": "bolt-js-getting-started-app",
+  "version": "2.0.0",
+  "description": "Getting Started ⚡️ Bolt for JavaScript",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@slack/bolt": "^3.6.0",
+    "superagent": "^8.0.9",
+    "wpapi": "^1.2.2"
+  }
+}
