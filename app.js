@@ -1,4 +1,7 @@
 const { App } = require('@slack/bolt');
+//const helper = require('./helper')
+const axios = require('axios');
+
 
 /* 
 This sample slack application uses SocketMode
@@ -600,6 +603,281 @@ app.action('button_click', async ({ body, ack, say }) => {
 });
 
 
+app.command('/p2splunk', async ({ command, ack, body, client }) => {
+  await ack();
+  try{
+    const result = await client.views.open({
+      trigger_id: body.trigger_id,
+      view: {
+        type: 'modal',
+        callback_id: 'p2splunk-submit',
+        title: {
+          type: 'plain_text',
+          text: 'Product Packaging Splunk'
+        },
+        blocks: [{
+          type: "input",
+          block_id: 'stack_name',
+          label: {
+            type: 'plain_text',
+            text: 'Stack Name'
+          },
+          element: {
+            type: 'plain_text_input',
+            action_id: 'stackname_input',
+          }
+        },{
+          type: "input",
+          block_id: 'cloud_provider',
+          element: {
+            type: "static_select",
+            placeholder: {
+              type: "plain_text",
+              text: "Select a cloud provider",
+              emoji: true
+            },
+            options: [
+              {
+                text: {
+                  type: "plain_text",
+                  text: "AWS",
+                  emoji: true
+                },
+                value: "aws"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "GCP",
+                  emoji: true
+                },
+                value: "gcp"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "FedRamp",
+                  emoji: true
+                },
+                value: "fedramp"
+              }
+        ],
+        action_id: "cloud_provider_input"
+      },
+      label: {
+        type: "plain_text",
+        text: "Region",
+        emoji: true
+      } },{
+        type: "input",
+        block_id: 'region',
+        element: {
+          type: "static_select",
+          placeholder: {
+            type: "plain_text",
+            text: "Select a region",
+            emoji: true
+          },
+          options: [
+            {
+              text: {
+                type: "plain_text",
+                text: "us-east1",
+                emoji: true
+              },
+              value: "us-east1"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "us-west2",
+                emoji: true
+              },
+              value: "us-west2"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "ca-central-1",
+                emoji: true
+              },
+              value: "ca-central-1"
+            }
+      ],
+      action_id: "region_input"
+    },
+    label: {
+      type: "plain_text",
+      text: "Cloud Provider",
+      emoji: true
+    } },
+    {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "Test block with multi static select"
+			},
+			"accessory": {
+				"type": "multi_static_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select options",
+					"emoji": true
+				},
+				"options": [
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "*this is plain_text text*",
+							"emoji": true
+						},
+						"value": "value-0"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "*this is plain_text text*",
+							"emoji": true
+						},
+						"value": "value-1"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "*this is plain_text text*",
+							"emoji": true
+						},
+						"value": "value-2"
+					}
+				],
+				"action_id": "multi_static_select-action"
+			}
+		}
+      ],submit: {
+          type: 'plain_text',
+          text: 'Submit',
+        }
+      }
+    })
+  }catch (error) {
+    console.error(error);
+  }
+});
+
+// create a body3 for all input: {"input":{"name":"tidy-toucan-urp","kind":"Stack","inputs":{"customerType":"Internal","type":"Clustered","region":"us-east-1"},"templates":[{"name":"stack/cloud_delivery/cda","inputs":{"order":{"cloud":"aws","net_new":false,"idm":false,"hipaa":false,"ddaa":false,"encryption":false,"poc":true,"poc_type":"Custom","autobahn_lane":"","existing":{"noah":false,"idm":false,"im4gn_indexers":false,"i3en_indexers":false,"x6i_instances":false},"ingest":{"cloud":5,"es":0,"itsi":0,"pci":0,"vmware":0,"exchange":0}}}}],"mixins":[]}}
+
+async function sendRequest() {
+  const url = 'http://localhost:8443/v3/translation/translate-order/stack'
+  const config = {
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  }
+  // create a body3 for all input: {"input":{"name":"tidy-toucan-urp","kind":"Stack","inputs":{"customerType":"Internal","type":"Clustered","region":"us-east-1"},"templates":[{"name":"stack/cloud_delivery/cda","inputs":{"order":{"cloud":"aws","net_new":true,"idm":false,"hipaa":false,"ddaa":false,"encryption":false,"poc":true,"poc_type":"Custom","autobahn_lane":"","existing":{"noah":false,"idm":false,"im4gn_indexers":false,"i3en_indexers":false,"x6i_instances":false},"ingest":{"cloud":5,"es":0,"itsi":0,"pci":0,"vmware":0,"exchange":0}}}}],"mixins":[]}}
+  const body3 = {}
+  body3["input"] = {}
+  body3["input"]["name"] = 'tidy-toucan-urp'
+  body3["input"]["kind"] = 'Stack'
+  body3["input"]["inputs"] = {}
+  body3["input"]["inputs"]["customerType"] = 'Internal'
+  body3["input"]["inputs"]["type"] = 'Clustered'
+  body3["input"]["inputs"]["region"] = 'us-east-1'
+  body3["input"]["templates"] = []
+  body3["input"]["templates"][0] = {}
+  body3["input"]["templates"][0]["name"] = 'stack/cloud_delivery/cda'
+  body3["input"]["templates"][0]["inputs"] = {}
+  body3["input"]["templates"][0]["inputs"]["order"] = {}
+  body3["input"]["templates"][0]["inputs"]["order"]["cloud"] = 'aws'
+  body3["input"]["templates"][0]["inputs"]["order"]["net_new"] = true
+  body3["input"]["templates"][0]["inputs"]["order"]["idm"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["hipaa"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["ddaa"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["encryption"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["poc"] = true
+  body3["input"]["templates"][0]["inputs"]["order"]["poc_type"] = 'Custom'
+  body3["input"]["templates"][0]["inputs"]["order"]["autobahn_lane"] = ''
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"] = {}
+
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["noah"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["idm"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["im4gn_indexers"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["i3en_indexers"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["x6i_instances"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["ingest"] = {}
+  body3["input"]["templates"][0]["inputs"]["order"]["ingest"]["cloud"] = 5
+  body3["input"]["templates"][0]["inputs"]["order"]["ingest"]["es"] = 0
+  body3["input"]["templates"][0]["inputs"]["order"]["ingest"]["itsi"] = 0
+  body3["input"]["templates"][0]["inputs"]["order"]["ingest"]["pci"] = 0
+  body3["input"]["templates"][0]["inputs"]["order"]["ingest"]["vmware"] = 0
+  body3["input"]["templates"][0]["inputs"]["order"]["ingest"]["exchange"] = 0
+  body3["input"]["mixins"] = []
+
+
+
+  const body2 = {}
+  body2["input"] = {}
+  body2["input"]["name"] = 'sampleco'
+  body2["input"]["inputs"] = {}
+  body2["input"]["inputs"]["customerType"] = 'Dev'
+  body2["input"]["inputs"]["region"] = 'us-east-1'
+
+
+ 
+  
+
+  //how to fix the issue:Identifier 'body' has already been declared
+  //https://stackoverflow.com/questions/40858942/identifier-has-already-been-declared
+  const response = await axios.post(url, body3, config)
+  console.log(response.data)
+  return response.data
+}
+
+//update modal
+app.view('p2splunk-submit', async ({ ack, body, view, client }) => {
+  // Acknowledge the action
+    await ack();
+   // console.log(JSON.stringify(body));//see the data getting passed
+    let msg = JSON.stringify("");
+
+    const user = body['user']['id'];
+
+    //call sendRequest in ./helper and get response
+  
+    let response = await sendRequest();
+    console.log(JSON.stringify(response));
+    //http call to local co2
+
+
+    //get all input fileds from the body
+    //call local co2
+    //map the field -> co2 json body
+    //call co2
+    //parse the respond back to the user
+    
+
+
+
+    //const results = await createWpUpdate(body['user']['username'],body);
+
+    // if (results){
+    //   msg = 'Your update was successful.'
+    // } else {
+    //   msg = 'I am a failure but I do not know why.'
+    // }
+
+    //message the user 
+
+    try {
+      await client.chat.postMessage({
+        channel: user,
+        text: JSON.stringify(response)
+      });
+    }
+    catch (error){
+      console.error(error);
+    }
+ 
+});
 
 app.command('/courseupdate', async ({ command, ack, body, client }) => {
   // Acknowledge the command request
@@ -727,10 +1005,12 @@ app.command('/courseupdate', async ({ command, ack, body, client }) => {
       }
     });
     //console.log(JSON.stringify(result));
+    //console.log(result)
   }
   catch (error) {
     console.error(error);
   }
+  
 });
 //update modal
 app.view('course-submit', async ({ ack, body, view, client }) => {
@@ -762,12 +1042,16 @@ app.view('course-submit', async ({ ack, body, view, client }) => {
  
 });
 
+
+
 (async () => {
   // Start your app
-  await app.start(process.env.PORT || 3000);
+  //await app.start(process.env.PORT || 3000);
+  await app.start(3000);
 
   console.log('⚡️ Bolt app is running!');
 })();
+
 
 
 function createWpUpdate(slackuser, body){
