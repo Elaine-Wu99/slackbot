@@ -16,7 +16,7 @@ const app = new App({
   appToken: process.env.SLACK_APP_TOKEN
 });
 
-
+const userInputData = new Map();
 app.message('submit', async ({ message, say }) => {
   // say() sends a message to the channel where the event was triggered
   await say({
@@ -947,6 +947,7 @@ app.command('/p2splunk', async ({ command, ack, body, client }) => {
             element: {
               type: 'plain_text_input',
               action_id: 'stackname_input',
+              initial_value: userInputData['stack_name'] || ''
             }
            }, {
             type: "input",
@@ -1004,21 +1005,11 @@ app.command('/p2splunk', async ({ command, ack, body, client }) => {
           {
             "type": "section",
             "text": {
-              "type": "mrkdwn",
-              "text": "This is a section block with a button."
-            },
-            "accessory":
-              {
-                "type": "button",
-                "text": {
-                  "type": "plain_text",
-                  "text": "Click Me",
-                  "emoji": true
-                },
-                "value": "click_me_123",
-                "action_id": "button-action_aws"
-              }
-           
+              "type": "plain_text",
+              "text": "Choose a Cloud Provider",
+              "emoji": true,
+             
+            }
           },
           {
             "type": "actions",
@@ -1028,31 +1019,31 @@ app.command('/p2splunk', async ({ command, ack, body, client }) => {
                 "type": "button",
                 "text": {
                   "type": "plain_text",
-                  "text": "Farmhouse",
+                  "text": "AWS",
                   "emoji": true
                 },
-                "value": "click_me_123",
+                "value": "aws",
                 "action_id": "button-action_aws"
               },
               {
                 "type": "button",
                 "text": {
                   "type": "plain_text",
-                  "text": "Kin Khao",
+                  "text": "GCP",
                   "emoji": true
                 },
-                "value": "click_me_123",
-                "url": "https://google.com"
+                "value": "gcp",
+                "action_id": "button-action_gcp"
               },
               {
                 "type": "button",
                 "text": {
                   "type": "plain_text",
-                  "text": "Ler Ros",
+                  "text": "FedRamp",
                   "emoji": true
                 },
-                "value": "click_me_123",
-                "url": "https://google.com"
+                "value": "fedramp",
+                "action_id": "button-action_fedramp"
               }
             ]
           },{
@@ -2650,7 +2641,7 @@ app.action('button-action_aws', async ({ ack, body, context, client }) => {
    // const selectedOption = values.three_buttons.button-action_aws.value;
    const selectedOption = body.actions[0].value;
    const updatedView = updateModalView(body, selectedOption);
-    if (selectedOption == "click_me_123"){
+    if (selectedOption == "aws"){
 
     
     // Acknowledge the action request
@@ -2688,6 +2679,18 @@ function updateModalView(body, selectedOption) {
       text: 'Updated Modal Title',
     },
     blocks: [{
+      type: "input",
+      block_id: 'stack_name',
+      label: {
+        type: 'plain_text',
+        text: 'Stack Name'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'stackname_input',
+        initial_value: userInputData['stack_name'] || ''
+      }
+    },{
       type: "input",
       block_id: "cloud_provider_update",
       // Add or modify blocks based on the selectedOption value
@@ -3036,7 +3039,7 @@ app.view('p2splunk-submit', async ({ ack, body, view, client }) => {
 
   //call sendRequest in ./helper and get response
   const values = body.view.state.values;
-  
+ //userInputData['stack_name'] = "aws";
 
   let cloud_provider = values.cloud_provider.cloud_provider_input.selected_option.value;
   let response = ""
