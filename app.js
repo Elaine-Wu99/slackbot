@@ -17,2666 +17,772 @@ const app = new App({
 });
 
 const userInputData = new Map();
-app.message('submit', async ({ message, say }) => {
-  // say() sends a message to the channel where the event was triggered
-  await say({
-    "blocks": [
-      {
 
-        "type": "input",
-        "element": {
-          "type": "plain_text_input",
-          "action_id": "submit_input"
-        },
-        "label": {
-          "type": "plain_text",
-          "text": "Stack Name",
-          "emoji": true
-
-        },
-
-      },
-
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": `Hey there <@${message.user}>!`
-        },
-        "accessory": {
-          "type": "button",
-          "text": {
-            "type": "plain_text",
-            "text": "Submit",
-          },
-          "action_id": "submit_click"
-        }
-      },
-
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "This is a section block with a button."
-        },
-        "accessory": {
-          "type": "button",
-          "text": {
-            "type": "plain_text",
-            "text": "Click Me",
-            "emoji": true
-          },
-          "value": "click_me_123",
-          "url": "https://google.com",
-          "action_id": "button-action"
-        }
-      }
-    ]
-
-  })
-});
-
-//generate a block that allows user to input text and click submit button, then get the input value from "submit_input" in text
-app.action('submit_click', async ({ body, ack, say }) => {
-  await ack();
-  let submit = body.actions[0].value;
-  await say(`<@${body.user.id}> selected ${submit}`);
-})
-
-
-//get the input value from "submit_input" in text
-app.action('submit_input', async ({ body, ack, say }) => {
-  await ack();
-  let submit = body.actions[0].value;
-  await say(`<@${body.user.id}> selected ${submit}`);
-})
-// Listens to incoming messages that contain "hello"
-app.message('hello', async ({ message, say }) => {
-  // say() sends a message to the channel where the event was triggered
-  await say({
-    blocks: [
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": `Hey there <@${message.user}>!`
-        },
-        "accessory": {
-          "type": "button",
-          "text": {
-            "type": "plain_text",
-            "text": "Click Me"
-          },
-          "action_id": "button_click"
-        }
-      }
-    ],
-    text: `Hey there <@${message.user}>!!`
-  });
-});
-
-// app.message('P2Bot', async ({ message, say }) => {
-//   await say({
-//     "blocks": [
-//       {
-//         "type": "input",
-//         "element": {
-//           "type": "plain_text_input",
-//           "action_id": "plain_text_input-action"
-//         },
-//         "label": {
-//           "type": "plain_text",
-//           "text": "Stack Name",
-//           "emoji": true
-//         }
-//       },
-//       {
-//         "type": "section",
-//         "text": {
-//           "type": "mrkdwn",
-//           "text": "Region"
-//         },
-//         "accessory": {
-//           "type": "static_select",
-//           "placeholder": {
-//             "type": "plain_text",
-//             "text": "Select a region",
-//             "emoji": true
-//           },
-//           "options": [
-//             {
-//               "text": {
-//                 "type": "plain_text",
-//                 "text": "us-east1",
-//                 "emoji": true
-//               },
-//               "value": "value-0"
-//             },
-//             {
-//               "text": {
-//                 "type": "plain_text",
-//                 "text": "us-west2",
-//                 "emoji": true
-//               },
-//               "value": "value-1"
-//             },
-//             {
-//               "text": {
-//                 "type": "plain_text",
-//                 "text": "ca-central-1",
-//                 "emoji": true
-//               },
-//               "value": "value-2"
-//             }
-//           ],
-//           "action_id": "select_region-action"
-//         }
-//       },
-//       {
-//         "type": "section",
-//         "text": {
-//           "type": "mrkdwn",
-//           "text": "Cloud Provider"
-//         },
-//         "accessory": {
-//           "type": "radio_buttons",
-//           "options": [
-//             {
-//               "text": {
-//                 "type": "plain_text",
-//                 "text": "AWS",
-//                 "emoji": true
-//               },
-//               "value": "value-0"
-//             },
-//             {
-//               "text": {
-//                 "type": "plain_text",
-//                 "text": "GCP",
-//                 "emoji": true
-//               },
-//               "value": "value-1"
-//             },
-//             {
-//               "text": {
-//                 "type": "plain_text",
-//                 "text": "FedRamp",
-//                 "emoji": true
-//               },
-//               "value": "value-2"
-//             }
-//           ],
-//           "action_id": "cloudprovider-action"
-//         }
-//       },{
-//         type: "input",
-//         block_id: 'details_netnew_tf',
-//         element: {
-//           type: "static_select",
-//           placeholder: {
-//             type: "plain_text",
-//             text: "Net New*",
-//             emoji: true
-//           },
-//           options: [
-//             {
-//               text: {
-//                 type: "plain_text",
-//                 text: "true",
-//                 emoji: true
-//               },
-//               value: "true"
-//             },
-//             {
-//               text: {
-//                 type: "plain_text",
-//                 text: "false",
-//                 emoji: true
-//               },
-//               value: "false"
-//             },
-//           ],
-//           action_id: "netnew_input"
-//         },
-//         label: {
-//           type: "plain_text",
-//           text: "Net New*(T/F)",
-//           emoji: true
-//         }
-//       } ,{
-//         type: "input",
-//         block_id: 'details_ridm_tf',
-//         element: {
-//           type: "static_select",
-//           placeholder: {
-//             type: "plain_text",
-//             text: "Requesting IDM",
-//             emoji: true
-//           },
-//           options: [
-//             {
-//               text: {
-//                 type: "plain_text",
-//                 text: "true",
-//                 emoji: true
-//               },
-//               value: "true"
-//             },
-//             {
-//               text: {
-//                 type: "plain_text",
-//                 text: "false",
-//                 emoji: true
-//               },
-//               value: "false"
-//             },
-//           ],
-//           action_id: "irdm_input"
-//         },
-//         label: {
-//           type: "plain_text",
-//           text: "Requesting IDM (T/F)",
-//           emoji: true
-//         }
-//       } ,{
-//         type: "input",
-//         block_id: 'details_hipaa_tf',
-//         element: {
-//           type: "static_select",
-//           placeholder: {
-//             type: "plain_text",
-//             text: "HIPAA/PCI",
-//             emoji: true
-//           },
-//           options: [
-//             {
-//               text: {
-//                 type: "plain_text",
-//                 text: "true",
-//                 emoji: true
-//               },
-//               value: "true"
-//             },
-//             {
-//               text: {
-//                 type: "plain_text",
-//                 text: "false",
-//                 emoji: true
-//               },
-//               value: "false"
-//             },
-//           ],
-//           action_id: "hipaa_input"
-//         },
-//         label: {
-//           type: "plain_text",
-//           text: "HIPAA/PCI (T/F)",
-//           emoji: true
-//         }
-//       } ,{
-//         type: "input",
-//         block_id: 'details_ddaa_tf',
-//         element: {
-//           type: "static_select",
-//           placeholder: {
-//             type: "plain_text",
-//             text: "DDAA",
-//             emoji: true
-//           },
-//           options: [
-//             {
-//               text: {
-//                 type: "plain_text",
-//                 text: "true",
-//                 emoji: true
-//               },
-//               value: "true"
-//             },
-//             {
-//               text: {
-//                 type: "plain_text",
-//                 text: "false",
-//                 emoji: true
-//               },
-//               value: "false"
-//             },
-//           ],
-//           action_id: "ddaa_input"
-//         },
-//         label: {
-//           type: "plain_text",
-//           text: "DDAA (T/F)",
-//           emoji: true
-//         }
-//       } ,{
-//         type: "input",
-//         block_id: 'details_encrption_tf',
-//         element: {
-//           type: "static_select",
-//           placeholder: {
-//             type: "plain_text",
-//             text: "Encryption",
-//             emoji: true
-//           },
-//           options: [
-//             {
-//               text: {
-//                 type: "plain_text",
-//                 text: "true",
-//                 emoji: true
-//               },
-//               value: "true"
-//             },
-//             {
-//               text: {
-//                 type: "plain_text",
-//                 text: "false",
-//                 emoji: true
-//               },
-//               value: "false"
-//             },
-//           ],
-//           action_id: "encryption_input"
-//         },
-//         label: {
-//           type: "plain_text",
-//           text: "Encryption (T/F)",
-//           emoji: true
-//         }
-//       },
-//       {
-//         "type": "section",
-//         "text": {
-//           "type": "mrkdwn",
-//           "text": "POC"
-//         },
-//         "accessory": {
-//           "type": "checkboxes",
-//           "options": [
-//             {
-//               "text": {
-//                 "type": "mrkdwn",
-//                 "text": "POC"
-
-
-//               },
-
-//               "value": "value-0"
-//             },
-//           ]
-//         }
-//       }
-//     ]
-//   })
-// })
-
-//get the input value from "details-action" checkboxes action, only in text, split all selections by space
-app.action('details-action', async ({ body, ack, say }) => {
-  await ack();
-  let details = body.actions[0].selected_options.map((option) => option.value).join(' ');
-  await say(`<@${body.user.id}> selected ${details}`);
-})
-
-
-app.message('Menu', async ({ message, say }) => {
-  await say({
-    "blocks": [
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "Hello, Assistant to the Regional Manager Dwight! *Michael Scott* wants to know where you'd like to take the Paper Company investors to dinner tonight.\n\n *Please select a restaurant:*"
-        }
-      },
-      {
-        "type": "divider"
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "*Farmhouse Thai Cuisine*\n:star::star::star::star: 1528 reviews\n They do have some vegan options, like the roti and curry, plus they have a ton of salad stuff and noodles can be ordered without meat!! They have something for everyone here"
-        },
-        "accessory": {
-          "type": "image",
-          "image_url": "https://s3-media3.fl.yelpcdn.com/bphoto/c7ed05m9lC2EmA3Aruue7A/o.jpg",
-          "alt_text": "alt text for image"
-        }
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "*Kin Khao*\n:star::star::star::star: 1638 reviews\n The sticky rice also goes wonderfully with the caramelized pork belly, which is absolutely melt-in-your-mouth and so soft."
-        },
-        "accessory": {
-          "type": "image",
-          "image_url": "https://s3-media2.fl.yelpcdn.com/bphoto/korel-1YjNtFtJlMTaC26A/o.jpg",
-          "alt_text": "alt text for image"
-        }
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "*Ler Ros*\n:star::star::star::star: 2082 reviews\n I would really recommend the  Yum Koh Moo Yang - Spicy lime dressing and roasted quick marinated pork shoulder, basil leaves, chili & rice powder."
-        },
-        "accessory": {
-          "type": "image",
-          "image_url": "https://s3-media2.fl.yelpcdn.com/bphoto/DawwNigKJ2ckPeDeDM7jAg/o.jpg",
-          "alt_text": "alt text for image"
-        }
-      },
-      {
-        "type": "divider"
-      },
-      {
-        "type": "actions",
-        "elements": [
-          {
-            "type": "button",
-            "text": {
-              "type": "plain_text",
-              "text": "Farmhouse",
-              "emoji": true
-            },
-            "value": "click_me_123"
-          },
-          {
-            "type": "button",
-            "text": {
-              "type": "plain_text",
-              "text": "Kin Khao",
-              "emoji": true
-            },
-            "value": "click_me_123",
-            "url": "https://google.com"
-          },
-          {
-            "type": "button",
-            "text": {
-              "type": "plain_text",
-              "text": "Ler Ros",
-              "emoji": true
-            },
-            "value": "click_me_123",
-            "url": "https://google.com"
-          }
-        ]
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "Test block with multi static select"
-        },
-        "accessory": {
-          "type": "multi_static_select",
-          "placeholder": {
-            "type": "plain_text",
-            "text": "Select options",
-            "emoji": true
-          },
-          "options": [
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "*this is plain_text text*",
-                "emoji": true
-              },
-              "value": "value-0"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "*this is plain_text text*",
-                "emoji": true
-              },
-              "value": "value-1"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "*this is plain_text text*",
-                "emoji": true
-              },
-              "value": "value-2"
-            }
-          ],
-          "action_id": "multi_static_select-action"
-        }
-      },
-      {
-        "type": "actions",
-        "elements": [
-          {
-            "type": "conversations_select",
-            "placeholder": {
-              "type": "plain_text",
-              "text": "Select a conversation",
-              "emoji": true
-            },
-            "action_id": "actionId-0"
-          },
-          {
-            "type": "channels_select",
-            "placeholder": {
-              "type": "plain_text",
-              "text": "Select a channel",
-              "emoji": true
-            },
-            "action_id": "actionId-1"
-          },
-          {
-            "type": "users_select",
-            "placeholder": {
-              "type": "plain_text",
-              "text": "Select a user",
-              "emoji": true
-            },
-            "action_id": "actionId-2"
-          },
-          {
-            "type": "static_select",
-            "placeholder": {
-              "type": "plain_text",
-              "text": "Select an item",
-              "emoji": true
-            },
-            "options": [
-              {
-                "text": {
-                  "type": "plain_text",
-                  "text": "*this is plain_text text*",
-                  "emoji": true
-                },
-                "value": "value-0"
-              },
-              {
-                "text": {
-                  "type": "plain_text",
-                  "text": "*this is plain_text text*",
-                  "emoji": true
-                },
-                "value": "value-1"
-              },
-              {
-                "text": {
-                  "type": "plain_text",
-                  "text": "*this is plain_text text*",
-                  "emoji": true
-                },
-                "value": "value-2"
-              }
-            ],
-            "action_id": "actionId-3"
-          }
-        ]
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "Test block with users select"
-        },
-        "accessory": {
-          "type": "users_select",
-          "placeholder": {
-            "type": "plain_text",
-            "text": "Select a user",
-            "emoji": true
-          },
-          "action_id": "users_select-action"
-        }
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "Pick an item from the dropdown list"
-        },
-        "accessory": {
-          "type": "static_select",
-          "placeholder": {
-            "type": "plain_text",
-            "text": "Select an item",
-            "emoji": true
-          },
-          "options": [
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "*this is plain_text text*",
-                "emoji": true
-              },
-              "value": "value-0"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "*this is plain_text text*",
-                "emoji": true
-              },
-              "value": "value-1"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "*this is plain_text text*",
-                "emoji": true
-              },
-              "value": "value-2"
-            }
-          ],
-          "action_id": "static_select-action"
-        }
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "This is a section block with a button."
-        },
-        "accessory": {
-          "type": "button",
-          "text": {
-            "type": "plain_text",
-            "text": "Click Me",
-            "emoji": true
-          },
-          "value": "click_me_123",
-          "action_id": "button-action"
-        }
-      }
-    ]
-  })
-})
-
-//get the input value from 'users_select-action' action, only in text
-app.action('users_select-action', async ({ body, ack, say }) => {
-  await ack();
-  await say(`<@${body.user.id}> selected <@${body.actions[0].selected_user}>`);
-  //await say(`<@${body.user.id}> selected <@${body.actions[0].selected_user}>`);
-
-})
-
-
-//get the input value from "cloudprovider-action" action, only in text
-app.action('cloudprovider-action', async ({ body, ack, say }) => {
-  await ack();
-  await say(`<@${body.user.id}> selected ${body.actions[0].selected_option.text.text}`);
-})
-
-
-app.action('button_click', async ({ body, ack, say }) => {
-  // Acknowledge the action
-  await ack();
-  await say(`<@${body.user.id}> clicked the button`);
-
-});
-
-//original version we need it
-// app.command('/p2splunk', async ({ command, ack, body, client }) => {
-//   await ack();
-//   try {
-//     const result = await client.views.open({
-//       trigger_id: body.trigger_id,
-//       view: {
-//         type: 'modal',
-//         callback_id: 'p2splunk-submit',
-//         title: {
-//           type: 'plain_text',
-//           text: 'Product Packaging Splunk'
-//         },
-//         blocks: [{
-//           type: "input",
-//           block_id: 'stack_name',
-//           label: {
-//             type: 'plain_text',
-//             text: 'Stack Name'
-//           },
-//           element: {
-//             type: 'plain_text_input',
-//             action_id: 'stackname_input',
-//           }
-//         }, {
-//           type: "input",
-//           block_id: 'cloud_provider',
-//           element: {
-//             type: "static_select",
-//             placeholder: {
-//               type: "plain_text",
-//               text: "Select a cloud provider",
-//               emoji: true
-//             },
-//             options: [
-//               {
-//                 text: {
-//                   type: "plain_text",
-//                   text: "AWS",
-//                   emoji: true
-//                 },
-//                 value: "aws"
-//               },
-//               {
-//                 text: {
-//                   type: "plain_text",
-//                   text: "GCP",
-//                   emoji: true
-//                 },
-//                 value: "gcp"
-//               },
-//               {
-//                 text: {
-//                   type: "plain_text",
-//                   text: "FedRamp",
-//                   emoji: true
-//                 },
-//                 value: "fedramp"
-//               }
-//             ],
-//             action_id: "cloud_provider_input"
-//           },
-//           label: {
-//             type: "plain_text",
-//             text: "Region",
-//             emoji: true
-//           }
-//         }, {
-//           type: "input",
-//           block_id: 'region',
-//           element: {
-//             type: "static_select",
-//             placeholder: {
-//               type: "plain_text",
-//               text: "Select a region",
-//               emoji: true
-//             },
-//             options: [
-//               {
-//                 text: {
-//                   type: "plain_text",
-//                   text: "us-east-1 (N. Virginia)",
-//                   emoji: true
-//                 },
-//                 value: "us-east1"
-//               },
-//               {
-//                 text: {
-//                   type: "plain_text",
-//                   text: "us-west-2 (Oregon)",
-//                   emoji: true
-//                 },
-//                 value: "us-west2"
-//               },
-//               {
-//                 text: {
-//                   type: "plain_text",
-//                   text: "ca-central-1",
-//                   emoji: true
-//                 },
-//                 value: "ca-central-1"
-//               }
-//             ],
-//             action_id: "region_input"
-//           },
-//           label: {
-//             type: "plain_text",
-//             text: "Cloud Provider",
-//             emoji: true
-//           }
-//         },
-//         {
-//           "type": "section",
-//           "text": {
-//             "type": "mrkdwn",
-//             "text": "Details"
-//           },
-//           "accessory": {
-//             "type": "multi_static_select",
-//             "placeholder": {
-//               "type": "plain_text",
-//               "text": "Select options",
-//               "emoji": true
-//             },
-//             "options": [
-//               {
-//                 "text": {
-//                   "type": "plain_text",
-//                   "text": "Net New *",
-//                   "emoji": true
-//                 },
-//                 "value": "value-0"
-//               },
-//               {
-//                 "text": {
-//                   "type": "plain_text",
-//                   "text": "Requesting IDM",
-//                   "emoji": true
-//                 },
-//                 "value": "value-1"
-//               },
-//               {
-//                 "text": {
-//                   "type": "plain_text",
-//                   "text": "Encryption",
-//                   "emoji": true
-//                 },
-//                 "value": "value-2"
-//               }
-//             ],
-//             "action_id": "multi_static_select-action"
-//           }
-//         }
-//         ], submit: {
-//           type: 'plain_text',
-//           text: 'Submit',
-//         }
-//       }
-//     })
-//   } catch (error) {
-//     console.error(error);
-//   }
-// });
-
-
-// app.action({ 'callback_id': 'p2splunk-submit' }, async ({ ack, body, context }) => {
-//   await ack();
-//   try {
-//     const result = await app.client.views.open({
-//       token: context.botToken,
-//       view_id: body.view.id,
-//       trigger_id: body.trigger_id,
-//       // View payload with updated blocks
-//       view: {
-//         // View identifier
-//         type: "modal",
-//         callback_id: 'p2splunk-submit',
-//         title: {
-//           type: "plain_text",
-//           text: "Search Results",
-//           emoji: true
-//         },
-//         submit: {
-//           type: "plain_text",
-//           text: "Submit"
-//         },
-//         blocks: [
-//           {
-//             type: "section",
-//             text: {
-//               type: "mrkdwn",
-//               text: "Updated."
-//             },
-//           }
-//         ]
-//       }
-//     });
-//     console.log(result);
-//   }
-//   catch (error) {
-//     console.error(error);
-//   }
-// });
 
 //check the argument after command /p2splunk is aws or gcp, if it is aws, generate a modal view, if is gcp, generate different view
 app.command('/p2splunk', async ({ command, ack, body, client }) => {
   await ack();
-  let cloud_provider = command.text;
-  let msg = JSON.stringify("");
-  if (cloud_provider == "aws") {
-    try {
-      const result = await client.views.open({
-        trigger_id: body.trigger_id,
-        view_id: "abcde",
-        hash: "156772938.1827394",
-        view: {
-          type: 'modal',
-          callback_id: 'p2splunk-submit',
-          title: {
+  //let cloud_provider = command.text;
+  try {
+    const result = await client.views.open({
+      trigger_id: body.trigger_id,
+      view_id: "abcde",
+      view: {
+        type: 'modal',
+        callback_id: 'p2splunk-submit',
+        title: {
+          type: 'plain_text',
+          text: 'Product Packaging Splunk'
+        },
+        blocks: [{
+          type: "input",
+          block_id: 'stack_name',
+          label: {
             type: 'plain_text',
-            text: 'Product Packaging Splunk'
+            text: 'Stack Name'
           },
-          blocks: [{
-            type: "input",
-            block_id: 'stack_name',
-            label: {
-              type: 'plain_text',
-              text: 'Stack Name'
-            },
-            element: {
-              type: 'plain_text_input',
-              action_id: 'stackname_input',
-              initial_value: userInputData['stack_name'] || ''
-            }
-           }, {
-            type: "input",
-            block_id: 'cloud_provider',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "Select a cloud provider",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "AWS",
-                    emoji: true
-                  },
-                  value: "aws"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "GCP",
-                    emoji: true
-                  },
-                  value: "gcp"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "FedRamp",
-                    emoji: true
-                  },
-                  value: "fedramp"
-                }
-              ],
-              action_id: "cloud_provider_input",
-              initial_option: {
-                text: {
-                  type: 'plain_text',
-                  text: 'AWS',
-                  emoji: true,
-                },
-                value: 'aws',
-              },
-
-            },
-            label: {
-              type: "plain_text",
-              text: "Cloud Provider(AWS)",
-              emoji: true
-            }
-          },
-          {
-            "type": "section",
-            "text": {
-              "type": "plain_text",
-              "text": "Choose a Cloud Provider",
-              "emoji": true,
-             
-            }
-          },
-          {
-            "type": "actions",
-            "block_id": "three_buttons",
-            "elements": [
-              {
-                "type": "button",
-                "text": {
-                  "type": "plain_text",
-                  "text": "AWS",
-                  "emoji": true
-                },
-                "value": "aws",
-                "action_id": "button-action_aws"
-              },
-              {
-                "type": "button",
-                "text": {
-                  "type": "plain_text",
-                  "text": "GCP",
-                  "emoji": true
-                },
-                "value": "gcp",
-                "action_id": "button-action_gcp"
-              },
-              {
-                "type": "button",
-                "text": {
-                  "type": "plain_text",
-                  "text": "FedRamp",
-                  "emoji": true
-                },
-                "value": "fedramp",
-                "action_id": "button-action_fedramp"
-              }
-            ]
-          },{
-            type: "input",
-            block_id: 'region',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "Select a region",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "us-east-1 (N. Virginia)",
-                    emoji: true
-                  },
-                  value: "us-east-1"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "us-west-2 (Oregon)",
-                    emoji: true
-                  },
-                  value: "us-west-2"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "ca-central-1 (Canada)",
-                    emoji: true
-                  },
-                  value: "ca-central-1"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "eu-west-1 (Ireland)",
-                    emoji: true
-                  },
-                  value: "eu-west-1"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "eu-west-2 (London)",
-                    emoji: true
-                  },
-                  value: "eu-west-2"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "eu-west-3 (Paris)",
-                    emoji: true
-                  },
-                  value: "eu-west-3"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "eu-central-1 (Frankfurt)",
-                    emoji: true
-                  },
-                  value: "eu-central-1"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "eu-north-1 (Stockholm)",
-                    emoji: true
-                  },
-                  value: "eu-north-1"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "ap-south-1 (Mumbai)",
-                    emoji: true
-                  },
-                  value: "ap-south-1"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "ap-northeast-1 (Tokyo)",
-                    emoji: true
-                  },
-                  value: "ap-norteast-1"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "ap-northeast-2 (Seoul)",
-                    emoji: true
-                  },
-                  value: "ap-norteast-2"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "ap-southeast-1 (Singapore)",
-                    emoji: true
-                  },
-                  value: "ap-southeast-1"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "ap-southeast-2 (Sydney)",
-                    emoji: true
-                  },
-                  value: "ap-southeast-2"
-                }
-              ],
-              action_id: "region_input",
-              initial_option: {
-                text: {
-                  type: 'plain_text',
-                  text: 'us-east-1 (N. Virginia)',
-                  emoji: true,
-                },
-                value: 'us-east-1',
-              },
-            },
-            label: {
-              type: "plain_text",
-              text: "Region",
-              emoji: true
-            }
-          }, {
-            type: "input",
-            block_id: 'poc_tf',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "POC",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "true",
-                    emoji: true
-                  },
-                  value: "true"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "false",
-                    emoji: true
-                  },
-                  value: "false"
-                },
-              ],
-              action_id: "poc_tf_input"
-            },
-            label: {
-              type: "plain_text",
-              text: "POC(T/F)",
-              emoji: true
-            }
-          }, {
-            type: "input",
-            block_id: 'poc_type',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "Choose a poc type",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "N/A",
-                    emoji: true
-                  },
-                  value: "n/a"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "Autobahn",
-                    emoji: true
-                  },
-                  value: "autobahn"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "Custom",
-                    emoji: true
-                  },
-                  value: "custom"
-                }
-              ],
-              action_id: "poc_type_input"
-            },
-            label: {
-              type: "plain_text",
-              text: "POC Type",
-              emoji: true
-            }
-          }, {
-            type: "input",
-            block_id: 'autobahn_lane',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "Select a Autobahn line",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "AWS Monitoring POV",
-                    emoji: true
-                  },
-                  value: "AWS Monitoring POV"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "Contact Center Analytics POV",
-                    emoji: true
-                  },
-                  value: "Contact Center Analytics POV"
-                }, {
-                  text: {
-                    type: "plain_text",
-                    text: "Enterprise Security POV",
-                    emoji: true
-                  },
-                  value: "Enterprise Security POV"
-                }, {
-                  text: {
-                    type: "plain_text",
-                    text: "Infosec App POV",
-                    emoji: true
-                  },
-                  value: "Infosec App POV"
-                }, {
-                  text: {
-                    type: "plain_text",
-                    text: "Infrastructure Monitoring and Troubleshooting POV",
-                    emoji: true
-                  },
-                  value: "Infrastructure Monitoring and Troubleshootng POV"
-                }, {
-                  text: {
-                    type: "plain_text",
-                    text: "IT Foundations POV",
-                    emoji: true
-                  },
-                  value: "IT Foundations POV"
-                }, {
-                  text: {
-                    type: "plain_text",
-                    text: "IT Ops Essentials POV",
-                    emoji: true
-                  },
-                  value: "IT Ops Essentials POV"
-                }, {
-                  text: {
-                    type: "plain_text",
-                    text: "ITOM Modernization POV",
-                    emoji: true
-                  },
-                  value: "ITOM Modernization POV"
-                }, {
-                  text: {
-                    type: "plain_text",
-                    text: "OT Security POV",
-                    emoji: true
-                  },
-                  value: "OT Security POV"
-                }, {
-                  text: {
-                    type: "plain_text",
-                    text: "Remote Work Insights POV",
-                    emoji: true
-                  },
-                  value: "Remote Work Insights POV"
-                }, {
-                  text: {
-                    type: "plain_text",
-                    text: "Security Essentials POV",
-                    emoji: true
-                  },
-                  value: "Security Essentials POV"
-                }, {
-                  text: {
-                    type: "plain_text",
-                    text: "Website Fraud POV",
-                    emoji: true
-                  },
-                  value: "Website Fraud POV"
-                }, {
-                  text: {
-                    type: "plain_text",
-                    text: "Website Operations POV",
-                    emoji: true
-                  },
-                  value: "Website Operations POV"
-                }
-              ],
-              action_id: "autobahn_lane_input"
-            },
-            label: {
-              type: "plain_text",
-              text: "Autobaun Line",
-              emoji: true
-            }
-          }, {
-            type: "input",
-            block_id: 'entitlements',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "Select an entitlement",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "Ingest",
-                    emoji: true
-                  },
-                  value: "ingest"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "SVCs",
-                    emoji: true
-                  },
-                  value: "svcs"
-                },
-
-              ],
-              action_id: "entitlements_input",
-              initial_option: {
-                text: {
-                  type: 'plain_text',
-                  text: 'Ingest',
-                  emoji: true,
-                },
-                value: 'ingest',
-              },
-            },
-            label: {
-              type: "plain_text",
-              text: "Entitlements",
-              emoji: true
-            }
-          },
-          {
-            type: "input",
-            block_id: 'details_netnew_tf',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "Net New*",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "true",
-                    emoji: true
-                  },
-                  value: "true"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "false",
-                    emoji: true
-                  },
-                  value: "false"
-                },
-              ],
-              action_id: "netnew_input"
-            },
-            label: {
-              type: "plain_text",
-              text: "Net New*(T/F)",
-              emoji: true
-            }
-          }, {
-            type: "input",
-            block_id: 'details_ridm_tf',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "Requesting IDM",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "true",
-                    emoji: true
-                  },
-                  value: "true"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "false",
-                    emoji: true
-                  },
-                  value: "false"
-                },
-              ],
-              action_id: "irdm_input"
-            },
-            label: {
-              type: "plain_text",
-              text: "Requesting IDM (T/F)",
-              emoji: true
-            }
-          }, {
-            type: "input",
-            block_id: 'details_hipaa_tf',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "HIPAA/PCI",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "true",
-                    emoji: true
-                  },
-                  value: "true"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "false",
-                    emoji: true
-                  },
-                  value: "false"
-                },
-              ],
-              action_id: "hipaa_input"
-            },
-            label: {
-              type: "plain_text",
-              text: "HIPAA/PCI (T/F)",
-              emoji: true
-            }
-          }, {
-            type: "input",
-            block_id: 'details_ddaa_tf',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "DDAA",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "true",
-                    emoji: true
-                  },
-                  value: "true"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "false",
-                    emoji: true
-                  },
-                  value: "false"
-                },
-              ],
-              action_id: "ddaa_input"
-            },
-            label: {
-              type: "plain_text",
-              text: "DDAA (T/F)",
-              emoji: true
-            }
-           }, {
-            type: "input",
-            block_id: 'details_encryption_tf',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "Encryption",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "true",
-                    emoji: true
-                  },
-                  value: "true"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "false",
-                    emoji: true
-                  },
-                  value: "false"
-                },
-              ],
-              action_id: "encryption_input"
-            },
-            label: {
-              type: "plain_text",
-              text: "Encryption (T/F)",
-              emoji: true
-            }
-           }, {
-            type: "input",
-            block_id: 'existing_noah_tf',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "Noah",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "true",
-                    emoji: true
-                  },
-                  value: "true"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "false",
-                    emoji: true
-                  },
-                  value: "false"
-                },
-              ],
-              action_id: "existing_noah_input"
-            },
-            label: {
-              type: "plain_text",
-              text: "Noah (T/F)",
-              emoji: true
-            }
-           }, {
-            type: "input",
-            block_id: 'existing_idm_tf',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "IDM",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "true",
-                    emoji: true
-                  },
-                  value: "true"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "false",
-                    emoji: true
-                  },
-                  value: "false"
-                },
-              ],
-              action_id: "existing_idm_input"
-            },
-            label: {
-              type: "plain_text",
-              text: "IDM (T/F)",
-              emoji: true
-            }
-           }, {
-            type: "input",
-            block_id: 'existing_im4gn_tf',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "Im4gn Indexers",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "true",
-                    emoji: true
-                  },
-                  value: "true"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "false",
-                    emoji: true
-                  },
-                  value: "false"
-                },
-              ],
-              action_id: "existing_im4gn_input"
-            },
-            label: {
-              type: "plain_text",
-              text: "Im4gn Indexers (T/F)",
-              emoji: true
-            }
-           }, {
-            type: "input",
-            block_id: 'existing_i3en_tf',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "I3en Indexers",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "true",
-                    emoji: true
-                  },
-                  value: "true"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "false",
-                    emoji: true
-                  },
-                  value: "false"
-                },
-              ],
-              action_id: "existing_i3en_input"
-            },
-            label: {
-              type: "plain_text",
-              text: "I3en Indexers(T/F)",
-              emoji: true
-            }
-           }, {
-            type: "input",
-            block_id: 'existing_x6i_tf',
-            element: {
-              type: "static_select",
-              placeholder: {
-                type: "plain_text",
-                text: "X6i Instances",
-                emoji: true
-              },
-              options: [
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "true",
-                    emoji: true
-                  },
-                  value: "true"
-                },
-                {
-                  text: {
-                    type: "plain_text",
-                    text: "false",
-                    emoji: true
-                  },
-                  value: "false"
-                },
-              ],
-              action_id: "existing_x6i_input"
-            },
-            label: {
-              type: "plain_text",
-              text: "X6i Instances(T/F)",
-              emoji: true
-            }
-           }, {
-            type: "input",
-            block_id: 'cloud_number',
-            label: {
-              type: 'plain_text',
-              text: 'Cloud'
-            },
-            element: {
-              type: 'plain_text_input',
-              action_id: 'cloud_num_input',
-              initial_value: '5'
-            }
-           }, {
-            type: "input",
-            block_id: 'es_number',
-            label: {
-              type: 'plain_text',
-              text: 'ES'
-            },
-            element: {
-              type: 'plain_text_input',
-              action_id: 'es_num_input',
-              initial_value: '0'
-            }
-           }, {
-            type: "input",
-            block_id: 'itsi_number',
-            label: {
-              type: 'plain_text',
-              text: 'ITSI'
-            },
-            element: {
-              type: 'plain_text_input',
-              action_id: 'itsi_num_input',
-              initial_value: '0'
-            }
-           }, {
-            type: "input",
-            block_id: 'pci_number',
-            label: {
-              type: 'plain_text',
-              text: 'PCI'
-            },
-            element: {
-              type: 'plain_text_input',
-              action_id: 'pci_num_input',
-              initial_value: '0'
-            }
-           }, {
-            type: "input",
-            block_id: 'vmware_number',
-            label: {
-              type: 'plain_text',
-              text: 'VMWare'
-            },
-            element: {
-              type: 'plain_text_input',
-              action_id: 'vmware_num_input',
-              initial_value: '0'
-            }
-           }, {
-            type: "input",
-            block_id: 'exchange_number',
-            label: {
-              type: 'plain_text',
-              text: 'Exchange'
-            },
-            element: {
-              type: 'plain_text_input',
-              action_id: 'exchange_num_input',
-              initial_value: '0'
-            }
-           },
-
-          ], submit: {
-            type: 'plain_text',
-            text: 'Submit',
+          element: {
+            type: 'plain_text_input',
+            action_id: 'stackname_input',
+            initial_value: userInputData['stack_name'] || ''
           }
-        }
-      })
-    } catch (error) {
-      console.error(error);
-    }
-  } else if (cloud_provider == "gcp") {
-    try {
-      const result = await client.views.open({
-        trigger_id: body.trigger_id,
-        view: {
-          type: 'modal',
-          callback_id: 'p2splunk-submit',
-          title: {
-            type: 'plain_text',
-            text: 'Product Packaging Splunk'
-          },
-          blocks: [
-            {
-              type: "input",
-              block_id: 'stack_name',
-              label: {
-                type: 'plain_text',
-                text: 'Stack Name'
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'stackname_input',
-              }
-            }, {
-              type: "input",
-              block_id: 'cloud_provider',
-              element: {
-                type: "static_select",
-                placeholder: {
-                  type: "plain_text",
-                  text: "Select a cloud provider",
-                  emoji: true
-                },
-                options: [
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "AWS",
-                      emoji: true
-                    },
-                    value: "aws"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "GCP",
-                      emoji: true
-                    },
-                    value: "gcp"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "FedRamp",
-                      emoji: true
-                    },
-                    value: "fedramp"
-                  }
-                ],
-                action_id: "cloud_provider_input"
-              },
-              label: {
-                type: "plain_text",
-                text: "Cloud Provider(GCP)",
-                emoji: true
-              }
-            }, {
-              type: "input",
-              block_id: 'region',
-              element: {
-                type: "static_select",
-                placeholder: {
-                  type: "plain_text",
-                  text: "Select a region",
-                  emoji: true
-                },
-                options: [
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "us-central-1 (lowa)",
-                      emoji: true
-                    },
-                    value: "us-central1"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "northamerica-northeast1 (Montrreal)",
-                      emoji: true
-                    },
-                    value: "northamerica-northest1"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "europe-west1 (Belgium)",
-                      emoji: true
-                    },
-                    value: "europe-west1"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "europe-west3 (Frankfrut)",
-                      emoji: true
-                    },
-                    value: "europe-west3"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "europe-west2 (London)",
-                      emoji: true
-                    },
-                    value: "europe-west2"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "asia-southeast1 (Singapore)",
-                      emoji: true
-                    },
-                    value: "asia-southeast1"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "australia-southeast1 (Syndney)",
-                      emoji: true
-                    },
-                    value: "australia-southeast1"
-                  },
+        },
+        {
+          "type": "section",
+          "text": {
+            "type": "plain_text",
+            "text": "Choose a Cloud Provider",
+            "emoji": true,
 
-
-                ],
-                action_id: "region_input"
-              },
-              label: {
-                type: "plain_text",
-                text: "Region",
-                emoji: true
-              }
-            }, {
-              type: "input",
-              block_id: 'poc_tf',
-              element: {
-                type: "static_select",
-                placeholder: {
-                  type: "plain_text",
-                  text: "POC",
-                  emoji: true
-                },
-                options: [
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "true",
-                      emoji: true
-                    },
-                    value: "true"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "false",
-                      emoji: true
-                    },
-                    value: "false"
-                  },
-                ],
-                action_id: "poc_tf_input"
-              },
-              label: {
-                type: "plain_text",
-                text: "POC(T/F)",
-                emoji: true
-              }
-            }, {
-              type: "input",
-              block_id: 'existing_idm_tf',
-              element: {
-                type: "static_select",
-                placeholder: {
-                  type: "plain_text",
-                  text: "IDM",
-                  emoji: true
-                },
-                options: [
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "true",
-                      emoji: true
-                    },
-                    value: "true"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "false",
-                      emoji: true
-                    },
-                    value: "false"
-                  },
-                ],
-                action_id: "existing_idm_input"
-              },
-              label: {
-                type: "plain_text",
-                text: "IDM (T/F)",
-                emoji: true
-              }
-            }, {
-              type: "input",
-              block_id: 'entitlements',
-              element: {
-                type: "static_select",
-                placeholder: {
-                  type: "plain_text",
-                  text: "Select an entitlement",
-                  emoji: true
-                },
-                options: [
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "Ingest",
-                      emoji: true
-                    },
-                    value: "ingest"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "SVCs",
-                      emoji: true
-                    },
-                    value: "svcs"
-                  },
-
-                ],
-                action_id: "entitlements_input",
-                initial_option: {
-                  text: {
-                    type: 'plain_text',
-                    text: 'Ingest',
-                    emoji: true,
-                  },
-                  value: 'ingest',
-                },
-              },
-              label: {
-                type: "plain_text",
-                text: "Entitlements",
-                emoji: true
-              }
-            },
-            {
-              type: "input",
-              block_id: 'details_netnew_tf',
-              element: {
-                type: "static_select",
-                placeholder: {
-                  type: "plain_text",
-                  text: "Net New*",
-                  emoji: true
-                },
-                options: [
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "true",
-                      emoji: true
-                    },
-                    value: "true"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "false",
-                      emoji: true
-                    },
-                    value: "false"
-                  },
-                ],
-                action_id: "netnew_input"
-              },
-              label: {
-                type: "plain_text",
-                text: "Net New*(T/F)",
-                emoji: true
-              }
-            }, {
-              type: "input",
-              block_id: 'details_ridm_tf',
-              element: {
-                type: "static_select",
-                placeholder: {
-                  type: "plain_text",
-                  text: "Requesting IDM",
-                  emoji: true
-                },
-                options: [
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "true",
-                      emoji: true
-                    },
-                    value: "true"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "false",
-                      emoji: true
-                    },
-                    value: "false"
-                  },
-                ],
-                action_id: "irdm_input"
-              },
-              label: {
-                type: "plain_text",
-                text: "Requesting IDM (T/F)",
-                emoji: true
-              }
-            }, {
-              type: "input",
-              block_id: 'details_encryption_tf',
-              element: {
-                type: "static_select",
-                placeholder: {
-                  type: "plain_text",
-                  text: "Encryption",
-                  emoji: true
-                },
-                options: [
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "true",
-                      emoji: true
-                    },
-                    value: "true"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "false",
-                      emoji: true
-                    },
-                    value: "false"
-                  },
-                ],
-                action_id: "encryption_input"
-              },
-              label: {
-                type: "plain_text",
-                text: "Encryption (T/F)",
-                emoji: true
-              }
-            }, {
-              type: "input",
-              block_id: 'cloud_number',
-              label: {
-                type: 'plain_text',
-                text: 'Cloud'
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'cloud_num_input',
-              }
-            }, {
-              type: "input",
-              block_id: 'es_number',
-              label: {
-                type: 'plain_text',
-                text: 'ES'
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'es_num_input',
-              }
-            }, {
-              type: "input",
-              block_id: 'itsi_number',
-              label: {
-                type: 'plain_text',
-                text: 'ITSI'
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'itsi_num_input',
-              }
-            }, {
-              type: "input",
-              block_id: 'pci_number',
-              label: {
-                type: 'plain_text',
-                text: 'PCI'
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'pci_num_input',
-              }
-            }, {
-              type: "input",
-              block_id: 'vmware_number',
-              label: {
-                type: 'plain_text',
-                text: 'VMWare'
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'vmware_num_input',
-              }
-            }, {
-              type: "input",
-              block_id: 'exchange_number',
-              label: {
-                type: 'plain_text',
-                text: 'Exchange'
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'exchange_num_input',
-              }
-            },
-
-          ], submit: {
-            type: 'plain_text',
-            text: 'Submit',
           }
-        }
-      })
-    } catch (error) {
-      console.error(error);
-    }
-  } else if (cloud_provider == "fedramp") {
-    try {
-      const result = await client.views.open({
-        trigger_id: body.trigger_id,
-        view: {
-          type: 'modal',
-          callback_id: 'p2splunk-submit',
-          title: {
-            type: 'plain_text',
-            text: 'Product Packaging Splunk'
-          },
-          blocks: [
+        },
+        {
+          "type": "actions",
+          "block_id": "three_buttons",
+          "elements": [
             {
-              type: "input",
-              block_id: 'stack_name',
-              label: {
-                type: 'plain_text',
-                text: 'Stack Name'
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'stackname_input',
-              }
-            }, {
-              type: "input",
-              block_id: 'cloud_provider',
-              element: {
-                type: "static_select",
-                placeholder: {
-                  type: "plain_text",
-                  text: "Select a cloud provider",
-                  emoji: true
-                },
-                options: [
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "AWS",
-                      emoji: true
-                    },
-                    value: "aws"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "GCP",
-                      emoji: true
-                    },
-                    value: "gcp"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "Fedramp",
-                      emoji: true
-                    },
-                    value: "fedramp"
-                  }
-                ],
-                action_id: "cloud_provider_input"
-              },
-              label: {
-                type: "plain_text",
-                text: "Cloud Provider(Fedramp)",
-                emoji: true
-              }
-            }, {
-              type: "input",
-              block_id: 'region',
-              element: {
-                type: "static_select",
-                placeholder: {
-                  type: "plain_text",
-                  text: "Select a region",
-                  emoji: true
-                },
-                options: [
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "us-gov-west-1 (US West)",
-                      emoji: true
-                    },
-                    value: "us-gov-west-1"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "us-gov-east-1 (US East)",
-                      emoji: true
-                    },
-                    value: "us-gov-east-1"
-                  },
-
-                ],
-                action_id: "region_input"
-              },
-              label: {
-                type: "plain_text",
-                text: "Region",
-                emoji: true
-              }
-            },
-            {
-              type: "input",
-              block_id: 'fredramp_type',
-              element: {
-                type: "static_select",
-                placeholder: {
-                  type: "plain_text",
-                  text: "Select a Fredramp Type",
-                  emoji: true
-                },
-                options: [
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "High",
-                      emoji: true
-                    },
-                    value: "high"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "Moderate",
-                      emoji: true
-                    },
-                    value: "moderate"
-                  }, {
-                    text: {
-                      type: "plain_text",
-                      text: "IL5",
-                      emoji: true
-                    },
-                    value: "il5"
-                  },
-
-                ],
-                action_id: "region_input"
-              },
-              label: {
-                type: "plain_text",
-                text: "Fedramp Type",
-                emoji: true
-              }
-            }, {
-              type: "input",
-              block_id: 'customer_classification',
-              element: {
-                type: "static_select",
-                placeholder: {
-                  type: "plain_text",
-                  text: "Select a Customer Classification",
-                  emoji: true
-                },
-                options: [
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "U.S. Gov: DoD/IC",
-                      emoji: true
-                    },
-                    value: "U.S. Gov: DoD / IC"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "State and Local Gov",
-                      emoji: true
-                    },
-                    value: "State and Local Gov"
-                  }, {
-                    text: {
-                      type: "plain_text",
-                      text: "Non-Government",
-                      emoji: true
-                    },
-                    value: "Non-Government"
-                  },
-
-                ],
-                action_id: "region_input"
-              },
-              label: {
-                type: "plain_text",
-                text: "Customer Classification",
-                emoji: true
-              }
-            }, {
-              type: "input",
-              block_id: 'entitlements',
-              element: {
-                type: "static_select",
-                placeholder: {
-                  type: "plain_text",
-                  text: "Select an entitlement",
-                  emoji: true
-                },
-                options: [
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "Ingest",
-                      emoji: true
-                    },
-                    value: "ingest"
-                  },
-                  {
-                    text: {
-                      type: "plain_text",
-                      text: "SVCs",
-                      emoji: true
-                    },
-                    value: "svcs"
-                  },
-
-                ],
-                action_id: "entitlements_input"
-              },
-              label: {
-                type: "plain_text",
-                text: "Entitlements",
-                emoji: true
-              }
-            },
-            {
-              "type": "section",
+              "type": "button",
               "text": {
-                "type": "mrkdwn",
-                "text": "Details"
+                "type": "plain_text",
+                "text": "AWS",
+                "emoji": true
               },
-              "accessory": {
-                "type": "multi_static_select",
-                "placeholder": {
-                  "type": "plain_text",
-                  "text": "Select options",
-                  "emoji": true
+              "value": "aws",
+              "action_id": "button-action_aws"
+            },
+            {
+              "type": "button",
+              "text": {
+                "type": "plain_text",
+                "text": "GCP",
+                "emoji": true
+              },
+              "value": "gcp",
+              "action_id": "button-action_gcp"
+            },
+            {
+              "type": "button",
+              "text": {
+                "type": "plain_text",
+                "text": "FedRamp",
+                "emoji": true
+              },
+              "value": "fedramp",
+              "action_id": "button-action_fedramp"
+            }
+          ]
+        }, {
+          type: "input",
+          block_id: 'region',
+          element: {
+            type: "static_select",
+            placeholder: {
+              type: "plain_text",
+              text: "Select a region",
+              emoji: true
+            },
+            options: [
+              {
+                text: {
+                  type: "plain_text",
+                  text: "us-east-1 (N. Virginia)",
+                  emoji: true
                 },
-                "options": [
-                  {
-                    "text": {
-                      "type": "plain_text",
-                      "text": "Net New *",
-                      "emoji": true
-                    },
-                    "value": "net_new"
+                value: "us-east-1"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "us-west-2 (Oregon)",
+                  emoji: true
+                },
+                value: "us-west-2"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "ca-central-1 (Canada)",
+                  emoji: true
+                },
+                value: "ca-central-1"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "eu-west-1 (Ireland)",
+                  emoji: true
+                },
+                value: "eu-west-1"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "eu-west-2 (London)",
+                  emoji: true
+                },
+                value: "eu-west-2"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "eu-west-3 (Paris)",
+                  emoji: true
+                },
+                value: "eu-west-3"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "eu-central-1 (Frankfurt)",
+                  emoji: true
+                },
+                value: "eu-central-1"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "eu-north-1 (Stockholm)",
+                  emoji: true
+                },
+                value: "eu-north-1"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "ap-south-1 (Mumbai)",
+                  emoji: true
+                },
+                value: "ap-south-1"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "ap-northeast-1 (Tokyo)",
+                  emoji: true
+                },
+                value: "ap-norteast-1"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "ap-northeast-2 (Seoul)",
+                  emoji: true
+                },
+                value: "ap-norteast-2"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "ap-southeast-1 (Singapore)",
+                  emoji: true
+                },
+                value: "ap-southeast-1"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "ap-southeast-2 (Sydney)",
+                  emoji: true
+                },
+                value: "ap-southeast-2"
+              }
+            ],
+            action_id: "region_input",
+            initial_option: {
+              text: {
+                type: 'plain_text',
+                text: 'us-east-1 (N. Virginia)',
+                emoji: true,
+              },
+              value: 'us-east-1',
+            },
+          },
+          label: {
+            type: "plain_text",
+            text: "Region",
+            emoji: true
+          }
+        }, {
+          "type": "section",
+          "text": {
+            "type": "plain_text",
+            "text": "Details",
+            "emoji": true,
+
+          }
+        }, {
+          "type": "actions",
+          "elements": [
+            {
+              "type": "checkboxes",
+              "options": [
+                {
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Net New*",
+                    "emoji": true
                   },
-                  {
-                    "text": {
-                      "type": "plain_text",
-                      "text": "Requesting IDM",
-                      "emoji": true
-                    },
-                    "value": "idm"
+
+                  "value": "net_new"
+                },
+                {
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Requesting IDM",
+                    "emoji": true
                   },
-                  {
-                    "text": {
-                      "type": "plain_text",
-                      "text": "Encryption",
-                      "emoji": true
-                    },
-                    "value": "encryption"
-                  }
-                ],
-                "action_id": "multi_static_select-action"
-              }
-            }, {
-              type: "input",
-              block_id: 'cloud_number',
-              label: {
-                type: 'plain_text',
-                text: 'Cloud'
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'cloud_num_input',
-              }
-            }, {
-              type: "input",
-              block_id: 'es_number',
-              label: {
-                type: 'plain_text',
-                text: 'ES'
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'es_num_input',
-              }
-            }, {
-              type: "input",
-              block_id: 'itsi_number',
-              label: {
-                type: 'plain_text',
-                text: 'ITSI'
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'itsi_num_input',
-              }
-            }, {
-              type: "input",
-              block_id: 'pci_number',
-              label: {
-                type: 'plain_text',
-                text: 'PCI'
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'pci_num_input',
-              }
-            }, {
-              type: "input",
-              block_id: 'vmware_number',
-              label: {
-                type: 'plain_text',
-                text: 'VMWare'
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'vmware_num_input',
-              }
-            }, {
-              type: "input",
-              block_id: 'exchange_number',
-              label: {
-                type: 'plain_text',
-                text: 'Exchange'
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'exchange_num_input',
-              }
+
+                  "value": "idm"
+                },
+                {
+                  "text": {
+                    "type": "plain_text",
+                    "text": "HIPAA/PIC",
+                    "emoji": true
+                  },
+
+                  "value": "hipaa"
+                },
+                {
+                  "text": {
+                    "type": "plain_text",
+                    "text": "DDAA",
+                    "emoji": true
+                  },
+
+                  "value": "ddaa"
+                }, {
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Encryption",
+                    "emoji": true
+                  },
+
+                  "value": "encryption"
+                },
+              ],
+              "action_id": "details_aws_checkbox",
+
             },
 
-          ], submit: {
-            type: 'plain_text',
-            text: 'Submit',
+          ]
+        }, {
+          "type": "section",
+          "text": {
+            "type": "plain_text",
+            "text": "POC(t/f)",
+            "emoji": true,
+
           }
+        },
+        {
+          "type": "actions",
+          "elements": [
+            {
+              "type": "checkboxes",
+              "options": [
+                {
+                  "text": {
+                    "type": "plain_text",
+                    "text": "POC",
+                    "emoji": true
+                  },
+
+                  "value": "poc"
+                },
+
+              ],
+              "action_id": "poc_checkbox",
+
+            },
+
+          ]
+        },
+        {
+          type: "input",
+          block_id: 'poc_type',
+          element: {
+            type: "static_select",
+            placeholder: {
+              type: "plain_text",
+              text: "Choose a poc type",
+              emoji: true
+            },
+            options: [
+              {
+                text: {
+                  type: "plain_text",
+                  text: "N/A",
+                  emoji: true
+                },
+                value: "n/a"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "Autobahn",
+                  emoji: true
+                },
+                value: "autobahn"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "Custom",
+                  emoji: true
+                },
+                value: "custom"
+              }
+            ],
+            action_id: "poc_type_input"
+          },
+          label: {
+            type: "plain_text",
+            text: "POC Type",
+            emoji: true
+          }
+        }, {
+          type: "input",
+          block_id: 'autobahn_lane',
+          element: {
+            type: "static_select",
+            placeholder: {
+              type: "plain_text",
+              text: "Select a Autobahn line",
+              emoji: true
+            },
+            options: [
+              {
+                text: {
+                  type: "plain_text",
+                  text: "AWS Monitoring POV",
+                  emoji: true
+                },
+                value: "AWS Monitoring POV"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "Contact Center Analytics POV",
+                  emoji: true
+                },
+                value: "Contact Center Analytics POV"
+              }, {
+                text: {
+                  type: "plain_text",
+                  text: "Enterprise Security POV",
+                  emoji: true
+                },
+                value: "Enterprise Security POV"
+              }, {
+                text: {
+                  type: "plain_text",
+                  text: "Infosec App POV",
+                  emoji: true
+                },
+                value: "Infosec App POV"
+              }, {
+                text: {
+                  type: "plain_text",
+                  text: "Infrastructure Monitoring and Troubleshooting POV",
+                  emoji: true
+                },
+                value: "Infrastructure Monitoring and Troubleshootng POV"
+              }, {
+                text: {
+                  type: "plain_text",
+                  text: "IT Foundations POV",
+                  emoji: true
+                },
+                value: "IT Foundations POV"
+              }, {
+                text: {
+                  type: "plain_text",
+                  text: "IT Ops Essentials POV",
+                  emoji: true
+                },
+                value: "IT Ops Essentials POV"
+              }, {
+                text: {
+                  type: "plain_text",
+                  text: "ITOM Modernization POV",
+                  emoji: true
+                },
+                value: "ITOM Modernization POV"
+              }, {
+                text: {
+                  type: "plain_text",
+                  text: "OT Security POV",
+                  emoji: true
+                },
+                value: "OT Security POV"
+              }, {
+                text: {
+                  type: "plain_text",
+                  text: "Remote Work Insights POV",
+                  emoji: true
+                },
+                value: "Remote Work Insights POV"
+              }, {
+                text: {
+                  type: "plain_text",
+                  text: "Security Essentials POV",
+                  emoji: true
+                },
+                value: "Security Essentials POV"
+              }, {
+                text: {
+                  type: "plain_text",
+                  text: "Website Fraud POV",
+                  emoji: true
+                },
+                value: "Website Fraud POV"
+              }, {
+                text: {
+                  type: "plain_text",
+                  text: "Website Operations POV",
+                  emoji: true
+                },
+                value: "Website Operations POV"
+              }
+            ],
+            action_id: "autobahn_lane_input"
+          },
+          label: {
+            type: "plain_text",
+            text: "Autobaun Line",
+            emoji: true
+          }
+        }, {
+          "type": "section",
+          "text": {
+            "type": "plain_text",
+            "text": "Existing",
+            "emoji": true,
+
+          }
+        }, {
+          "type": "actions",
+          "elements": [
+            {
+              "type": "checkboxes",
+              "options": [
+                {
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Noah",
+                    "emoji": true
+                  },
+
+                  "value": "noah"
+                },
+                {
+                  "text": {
+                    "type": "plain_text",
+                    "text": "IDM",
+                    "emoji": true
+                  },
+
+                  "value": "idm"
+                },
+                {
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Im4gn Indexer",
+                    "emoji": true
+                  },
+
+                  "value": "im4gn"
+                },
+                {
+                  "text": {
+                    "type": "plain_text",
+                    "text": "I3en Indexers",
+                    "emoji": true
+                  },
+
+                  "value": "i3en"
+                }, {
+                  "text": {
+                    "type": "plain_text",
+                    "text": "X6i Instances",
+                    "emoji": true
+                  },
+
+                  "value": "x6i"
+                },
+              ],
+              "action_id": "existing_checkbox",
+
+            },
+
+          ]
+        },
+
+        {
+          type: "input",
+          block_id: 'entitlements',
+          element: {
+            type: "static_select",
+            placeholder: {
+              type: "plain_text",
+              text: "Select an entitlement",
+              emoji: true
+            },
+            options: [
+              {
+                text: {
+                  type: "plain_text",
+                  text: "Ingest",
+                  emoji: true
+                },
+                value: "ingest"
+              },
+              {
+                text: {
+                  type: "plain_text",
+                  text: "SVCs",
+                  emoji: true
+                },
+                value: "svcs"
+              },
+
+            ],
+            action_id: "entitlements_input",
+            initial_option: {
+              text: {
+                type: 'plain_text',
+                text: 'Ingest',
+                emoji: true,
+              },
+              value: 'ingest',
+            },
+          },
+          label: {
+            type: "plain_text",
+            text: "Entitlements",
+            emoji: true
+          }
+        },
+        {
+          type: "input",
+          block_id: 'cloud_number',
+          label: {
+            type: 'plain_text',
+            text: 'Cloud'
+          },
+          element: {
+            type: 'plain_text_input',
+            action_id: 'cloud_num_input',
+            initial_value: '5'
+          }
+        }, {
+          type: "input",
+          block_id: 'es_number',
+          label: {
+            type: 'plain_text',
+            text: 'ES'
+          },
+          element: {
+            type: 'plain_text_input',
+            action_id: 'es_num_input',
+            initial_value: '0'
+          }
+        }, {
+          type: "input",
+          block_id: 'itsi_number',
+          label: {
+            type: 'plain_text',
+            text: 'ITSI'
+          },
+          element: {
+            type: 'plain_text_input',
+            action_id: 'itsi_num_input',
+            initial_value: '0'
+          }
+        }, {
+          type: "input",
+          block_id: 'pci_number',
+          label: {
+            type: 'plain_text',
+            text: 'PCI'
+          },
+          element: {
+            type: 'plain_text_input',
+            action_id: 'pci_num_input',
+            initial_value: '0'
+          }
+        }, {
+          type: "input",
+          block_id: 'vmware_number',
+          label: {
+            type: 'plain_text',
+            text: 'VMWare'
+          },
+          element: {
+            type: 'plain_text_input',
+            action_id: 'vmware_num_input',
+            initial_value: '0'
+          }
+        }, {
+          type: "input",
+          block_id: 'exchange_number',
+          label: {
+            type: 'plain_text',
+            text: 'Exchange'
+          },
+          element: {
+            type: 'plain_text_input',
+            action_id: 'exchange_num_input',
+            initial_value: '0'
+          }
+        },
+
+        ], submit: {
+          type: 'plain_text',
+          text: 'Submit',
         }
-      })
-    } catch (error) {
-      console.error(error);
-    }
+      }
+    })
+  } catch (error) {
+    console.error(error);
   }
+
 });
-
-
-//Listener for the action when a user selects an option in the modal
 app.action('button-action_aws', async ({ ack, body, context, client }) => {
   try {
     await ack();
     const values = body.view.state.values;
-   // const selectedOption = values.three_buttons.button-action_aws.value;
-   const selectedOption = body.actions[0].value;
-   const updatedView = updateModalView(body, selectedOption);
-    if (selectedOption == "aws"){
-
-    
-    // Acknowledge the action request
-    await ack({
-      "response_action": "update",
-      "view":  updatedView 
-    });
-    
-    // Get the selected option value from the payload
-    //const selectedOption = values.cloud_provider.cloud_provider_input.selected_option.value;
-    console.log(selectedOption)
-    // Call a function to update the modal view based on the selected option
-
-    // Use apps.update to update the view
-    await client.views.update({
-     // token: process.env.SLACK_BOT_TOKEN,
-      trigger_id: body.trigger_id,
-      response_action: "update",
-      view_id: body.view.id,
-      view: updatedView,
-     // hash:"156772938.1827394"
-    });
-  }
+    // const selectedOption = values.three_buttons.button-action_aws.value;
+    const selectedOption = body.actions[0].value;
+    userInputData.set('cloud_provider', selectedOption);
+    const updatedView = updateModalView(body, selectedOption);
+    userInputData["cloud_provider"] = selectedOption
   } catch (error) {
     console.error('Error handling action:', error);
   }
 });
-function updateModalView(body, selectedOption) {
+app.action('button-action_gcp', async ({ ack, body, context, client }) => {
+  try {
+    await ack();
+    const values = body.view.state.values;
+    // const selectedOption = values.three_buttons.button-action_aws.value;
+    const selectedOption = body.actions[0].value;
+    userInputData.set('cloud_provider', selectedOption);
+    const updatedView = updateModalView_gcp(body, selectedOption);
+    userInputData["cloud_provider"] = selectedOption
+    await ack({
+      "response_action": "update",
+      "view": updatedView
+    });
+    await client.views.update({
+      // token: process.env.SLACK_BOT_TOKEN,
+      trigger_id: body.trigger_id,
+      response_action: "update",
+      view_id: body.view.id,
+      view: updatedView,
+      // hash:"156772938.1827394"
+    });
+
+  } catch (error) {
+    console.error('Error handling action:', error);
+  }
+});
+app.action('button-action_fedramp', async ({ ack, body, context, client }) => {
+  try {
+    await ack();
+    const values = body.view.state.values;
+    // const selectedOption = values.three_buttons.button-action_aws.value;
+    const selectedOption = body.actions[0].value;
+    userInputData.set('cloud_provider', selectedOption);
+    const updatedView = updateModalView_fedramp(body, selectedOption);
+    userInputData["cloud_provider"] = selectedOption
+    console.log(";;;;;;"+selectedOption)
+    await ack({
+      "response_action": "update",
+      "view": updatedView
+    });
+    await client.views.update({
+      // token: process.env.SLACK_BOT_TOKEN,
+      trigger_id: body.trigger_id,
+      response_action: "update",
+      view_id: body.view.id,
+      view: updatedView,
+      // hash:"156772938.1827394"
+    });
+
+  } catch (error) {
+    console.error('Error handling action:', error);
+  }
+});
+
+//Listener for the action when a user selects an option in the modal
+app.action('button-action_aws1', async ({ ack, body, context, client }) => {
+  try {
+    await ack();
+    const values = body.view.state.values;
+    // const selectedOption = values.three_buttons.button-action_aws.value;
+    const selectedOption = body.actions[0].value;
+    console.log(selectedOption)
+    userInputData.set('cloud_provider', selectedOption);
+    const updatedView = updateModalView(body, selectedOption);
+    userInputData["cloud_provider"] = selectedOption
+    if (selectedOption == "aws") {
+
+
+      // Acknowledge the action request
+      await ack({
+        "response_action": "update",
+        "view": updatedView
+      });
+
+      // Get the selected option value from the payload
+      //const selectedOption = values.cloud_provider.cloud_provider_input.selected_option.value;
+      console.log(selectedOption)
+      // Call a function to update the modal view based on the selected option
+
+      // Use apps.update to update the view
+      await client.views.update({
+        // token: process.env.SLACK_BOT_TOKEN,
+        trigger_id: body.trigger_id,
+        response_action: "update",
+        view_id: body.view.id,
+        view: updatedView,
+        // hash:"156772938.1827394"
+      });
+    }
+  } catch (error) {
+    console.error('Error handling action:', error);
+  }
+});
+function updateModalView_gcp(body, selectedOption) {
   // Create a new view object or modify the existing one based on the selected option
   const updatedView = {
     type: 'modal',
-    callback_id: 'p2splunk-submit-update',
+    callback_id: 'p2splunk-submit',
     title: {
       type: 'plain_text',
-      text: 'Updated Modal Title',
+      text: 'Product Packaging Splunk',
     },
     blocks: [{
       type: "input",
@@ -2690,20 +796,356 @@ function updateModalView(body, selectedOption) {
         action_id: 'stackname_input',
         initial_value: userInputData['stack_name'] || ''
       }
-    },{
+    }, {
+      "type": "section",
+      "text": {
+        "type": "plain_text",
+        "text": "Choose a Cloud Provider",
+        "emoji": true,
+      }
+    }, {
+      "type": "actions",
+      "block_id": "three_buttons",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "AWS",
+            "emoji": true
+          },
+          "value": "aws",
+          "action_id": "button-action_aws"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "GCP",
+            "emoji": true
+          },
+          "value": "gcp",
+          "action_id": "button-action_gcp"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "FedRamp",
+            "emoji": true
+          },
+          "value": "fedramp",
+          "action_id": "button-action_fedramp"
+        }
+      ]
+    }, {
       type: "input",
-      block_id: "cloud_provider_update",
-      // Add or modify blocks based on the selectedOption value
-      // For example:
+      block_id: 'region',
+      element: {
+        type: "static_select",
+        placeholder: {
+          type: "plain_text",
+          text: "Select a region",
+          emoji: true
+        },
+        options: [
+          {
+            text: {
+              type: "plain_text",
+              text: "us-central-1 (lowa)",
+              emoji: true
+            },
+            value: "us-central1"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "northamerica-northeast1 (Montrreal)",
+              emoji: true
+            },
+            value: "northamerica-northest1"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "europe-west1 (Belgium)",
+              emoji: true
+            },
+            value: "europe-west1"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "europe-west3 (Frankfrut)",
+              emoji: true
+            },
+            value: "europe-west3"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "europe-west2 (London)",
+              emoji: true
+            },
+            value: "europe-west2"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "asia-southeast1 (Singapore)",
+              emoji: true
+            },
+            value: "asia-southeast1"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "australia-southeast1 (Syndney)",
+              emoji: true
+            },
+            value: "australia-southeast1"
+          },
+
+
+        ],
+        action_id: "region_input",
+        initial_option: {
+          text: {
+            type: "plain_text",
+            text: "us-central-1 (lowa)",
+            emoji: true
+          },
+          value: "us-central1"
+        },
+      },
+      label: {
+        type: "plain_text",
+        text: "Region",
+        emoji: true
+      }
+    }, {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "checkboxes",
+          "options": [
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Net New*",
+                "emoji": true
+              },
+
+              "value": "net_new"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Requesting IDM",
+                "emoji": true
+              },
+
+              "value": "idm"
+            },
+
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Encryption",
+                "emoji": true
+              },
+
+              "value": "encryption"
+            },
+          ],
+          "action_id": "details_aws_checkbox",
+        },
+      ]
+    }, {
+      "type": "section",
+      "text": {
+        "type": "plain_text",
+        "text": "POC(t/f)",
+        "emoji": true,
+
+      }
+    },
+    {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "checkboxes",
+          "options": [
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "POC",
+                "emoji": true
+              },
+
+              "value": "poc"
+            },
+
+          ],
+          "action_id": "poc_checkbox",
+
+        },
+      ]
+    }, {
+      "type": "section",
+      "text": {
+        "type": "plain_text",
+        "text": "Existing",
+        "emoji": true,
+
+      }
+    }, {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "checkboxes",
+          "options": [
+
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "IDM",
+                "emoji": true
+              },
+
+              "value": "idm"
+            },
+
+          ],
+          "action_id": "existing_checkbox",
+
+        },
+
+      ]
+    }, {
+      type: "input",
+      block_id: 'entitlements',
+      element: {
+        type: "static_select",
+        placeholder: {
+          type: "plain_text",
+          text: "Select an entitlement",
+          emoji: true
+        },
+        options: [
+          {
+            text: {
+              type: "plain_text",
+              text: "Ingest",
+              emoji: true
+            },
+            value: "ingest"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "SVCs",
+              emoji: true
+            },
+            value: "svcs"
+          },
+
+        ],
+        action_id: "entitlements_input",
+        initial_option: {
+          text: {
+            type: 'plain_text',
+            text: 'Ingest',
+            emoji: true,
+          },
+          value: 'ingest',
+        },
+      },
+      label: {
+        type: "plain_text",
+        text: "Entitlements",
+        emoji: true
+      }
+    },
+    {
+      type: "input",
+      block_id: 'cloud_number',
       label: {
         type: 'plain_text',
-        text: 'Stack Name'
+        text: 'Cloud'
       },
       element: {
         type: 'plain_text_input',
-        action_id: 'stackname_input',
+        action_id: 'cloud_num_input',
+        initial_value: '5'
       }
+    }, {
+      type: "input",
+      block_id: 'es_number',
+      label: {
+        type: 'plain_text',
+        text: 'ES'
       },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'es_num_input',
+        initial_value: '0'
+      }
+    }, {
+      type: "input",
+      block_id: 'itsi_number',
+      label: {
+        type: 'plain_text',
+        text: 'ITSI'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'itsi_num_input',
+        initial_value: '0'
+      }
+    }, {
+      type: "input",
+      block_id: 'pci_number',
+      label: {
+        type: 'plain_text',
+        text: 'PCI'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'pci_num_input',
+        initial_value: '0'
+      }
+    }, {
+      type: "input",
+      block_id: 'vmware_number',
+      label: {
+        type: 'plain_text',
+        text: 'VMWare'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'vmware_num_input',
+        initial_value: '0'
+      }
+    }, {
+      type: "input",
+      block_id: 'exchange_number',
+      label: {
+        type: 'plain_text',
+        text: 'Exchange'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'exchange_num_input',
+        initial_value: '0'
+      }
+    },
+
+
+
+
+
+
       // Add other blocks as needed
     ], submit: {
       type: 'plain_text',
@@ -2713,88 +1155,541 @@ function updateModalView(body, selectedOption) {
 
   return updatedView;
 }
-// app.action('p2splunk-submit', async ({ ack, body, view, client }) => {
-//   // Acknowledge the action
-//   await ack();
-//   // console.log(JSON.stringify(body));//see the data getting passed
-//   let msg = JSON.stringify("");
+function updateModalView_fedramp(body, selectedOption) {
+  // Create a new view object or modify the existing one based on the selected option
+  const updatedView = {
+    type: 'modal',
+    callback_id: 'p2splunk-submit',
+    title: {
+      type: 'plain_text',
+      text: 'Product Packaging Splunk',
+    },
+    blocks: [{
+      type: "input",
+      block_id: 'stack_name',
+      label: {
+        type: 'plain_text',
+        text: 'Stack Name'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'stackname_input',
+        initial_value: userInputData['stack_name'] || ''
+      }
+    }, {
+      "type": "section",
+      "text": {
+        "type": "plain_text",
+        "text": "Choose a Cloud Provider",
+        "emoji": true,
+      }
+    }, {
+      "type": "actions",
+      "block_id": "three_buttons",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "AWS",
+            "emoji": true
+          },
+          "value": "aws",
+          "action_id": "button-action_aws"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "GCP",
+            "emoji": true
+          },
+          "value": "gcp",
+          "action_id": "button-action_gcp"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "FedRamp",
+            "emoji": true
+          },
+          "value": "fedramp",
+          "action_id": "button-action_fedramp"
+        }
+      ]
+    }, {
+      type: "input",
+      block_id: 'region',
+      element: {
+        type: "static_select",
+        placeholder: {
+          type: "plain_text",
+          text: "Select a region",
+          emoji: true
+        },
+        options: [
+          {
+            text: {
+              type: "plain_text",
+              text: "us-gov-west-1(US West)",
+              emoji: true
+            },
+            value: "us-gov-west-1"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "us-gov-east-1(US East)",
+              emoji: true
+            },
+            value: "us-gov-east-1"
+          },
+          
 
 
-//   const user = body['user']['id'];
-//   const values = body.view.state.values;
-//   let stackname = values.stack_name.stackname_input.value;
+        ],
+        action_id: "region_input",
+        initial_option: {
+          text: {
+            type: "plain_text",
+            text: "us-gov-west-1(US West)",
+            emoji: true
+          },
+          value: "us-gov-west-1"
+        },
+      },
+      label: {
+        type: "plain_text",
+        text: "Region",
+        emoji: true
+      }
+    }, 
+    {
+      type: "input",
+      block_id: 'redramp_type',
+      element: {
+        type: "static_select",
+        placeholder: {
+          type: "plain_text",
+          text: "Select a FredRamp Type",
+          emoji: true
+        },
+        options: [
+          {
+            text: {
+              type: "plain_text",
+              text: "High",
+              emoji: true
+            },
+            value: "high"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "Moderate",
+              emoji: true
+            },
+            value: "moderate"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "IL5",
+              emoji: true
+            },
+            value: "il5"
+          },
+
+
+        ],
+        action_id: "region_input",
+        initial_option: {
+          text: {
+            type: "plain_text",
+            text: "High",
+            emoji: true
+          },
+          value: "high"
+        },
+      },
+      label: {
+        type: "plain_text",
+        text: "Fedramp Type",
+        emoji: true
+      }
+    },{
+      type: "input",
+      block_id: 'customer_classification',
+      element: {
+        type: "static_select",
+        placeholder: {
+          type: "plain_text",
+          text: "Select a Customer Classification",
+          emoji: true
+        },
+        options: [
+          {
+            text: {
+              type: "plain_text",
+              text: "U.S. Gov: DOD/IC",
+              emoji: true
+            },
+            value: "u.s.gov:dod/ic"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "State and Local Gov",
+              emoji: true
+            },
+            value: "state and local gov"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "Non-Government",
+              emoji: true
+            },
+            value: "non-government"
+          },
+
+
+        ],
+        action_id: "customer_classification_input",
+        initial_option: {
+          text: {
+            type: "plain_text",
+            text: "U.S. Gov: DOD/IC",
+            emoji: true
+          },
+          value: "u.s.gov:dod/ic"
+        },
+      },
+      label: {
+        type: "plain_text",
+        text: "Customer Classification",
+        emoji: true
+      }
+    }, {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "checkboxes",
+          "options": [
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Net New*",
+                "emoji": true
+              },
+
+              "value": "net_new"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Requesting IDM",
+                "emoji": true
+              },
+
+              "value": "idm"
+            },
+
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Encryption",
+                "emoji": true
+              },
+
+              "value": "encryption"
+            },
+          ],
+          "action_id": "details_aws_checkbox",
+        },
+      ]
+    },  {
+      "type": "section",
+      "text": {
+        "type": "plain_text",
+        "text": "Existing",
+        "emoji": true,
+
+      }
+    }, {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "checkboxes",
+          "options": [
+
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "IDM",
+                "emoji": true
+              },
+
+              "value": "idm"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "X6i Instances",
+                "emoji": true
+              },
+
+              "value": "x6i"
+            },
+
+          ],
+          "action_id": "existing_checkbox",
+         
+        },
+        
+
+      ]
+    }, {
+      type: "input",
+      block_id: 'entitlements',
+      element: {
+        type: "static_select",
+        placeholder: {
+          type: "plain_text",
+          text: "Select an entitlement",
+          emoji: true
+        },
+        options: [
+          {
+            text: {
+              type: "plain_text",
+              text: "Ingest",
+              emoji: true
+            },
+            value: "ingest"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "SVCs",
+              emoji: true
+            },
+            value: "svcs"
+          },
+
+        ],
+        action_id: "entitlements_input",
+        initial_option: {
+          text: {
+            type: 'plain_text',
+            text: 'Ingest',
+            emoji: true,
+          },
+          value: 'ingest',
+        },
+      },
+      label: {
+        type: "plain_text",
+        text: "Entitlements",
+        emoji: true
+      }
+    },
+    {
+      type: "input",
+      block_id: 'cloud_number',
+      label: {
+        type: 'plain_text',
+        text: 'Cloud'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'cloud_num_input',
+        initial_value: '5'
+      }
+    }, {
+      type: "input",
+      block_id: 'es_number',
+      label: {
+        type: 'plain_text',
+        text: 'ES'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'es_num_input',
+        initial_value: '0'
+      }
+    }, {
+      type: "input",
+      block_id: 'itsi_number',
+      label: {
+        type: 'plain_text',
+        text: 'ITSI'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'itsi_num_input',
+        initial_value: '0'
+      }
+    }, {
+      type: "input",
+      block_id: 'pci_number',
+      label: {
+        type: 'plain_text',
+        text: 'PCI'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'pci_num_input',
+        initial_value: '0'
+      }
+    }, {
+      type: "input",
+      block_id: 'vmware_number',
+      label: {
+        type: 'plain_text',
+        text: 'VMWare'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'vmware_num_input',
+        initial_value: '0'
+      }
+    }, {
+      type: "input",
+      block_id: 'exchange_number',
+      label: {
+        type: 'plain_text',
+        text: 'Exchange'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'exchange_num_input',
+        initial_value: '0'
+      }
+    },
 
 
 
-//   //call sendRequest in ./helper and get response
 
 
 
-//   let response = await sendRequest(body);
-//   console.log(JSON.stringify(response));
-//   //http call to local co2
+      // Add other blocks as needed
+    ], submit: {
+      type: 'plain_text',
+      text: 'Submit',
+    }
+  };
+
+  return updatedView;
+}
+function generate_details_map(input) {
+  const myMap = new Map();
+  myMap.set("net_new", "Net New*");
+  myMap.set("idm", "Requesting IDM");
+  myMap.set("hipaa", "HIPAA/PIC");
+  myMap.set("ddaa", "DDAA")
+  myMap.set("encryption", "Encryption")
+
+  const output = [];
+  for (const item of input) {
+    const value = myMap.get(item) || '';
+    output.push({
+      text: {
+        type: "plain_text",
+        text: value,
+        emoji: true
+      },
+      value: item
+    });
+  }
+  console.log(output)
+  return output;
+}
+
+
+app.action('p2splunk-submit', async ({ ack, body, view, client }) => {
+  // Acknowledge the action
+  await ack();
+  // console.log(JSON.stringify(body));//see the data getting passed
+  let msg = JSON.stringify("");
+
+
+  const user = body['user']['id'];
+  const values = body.view.state.values;
+  let stackname = values.stack_name.stackname_input.value;
 
 
 
-//   //get all input fileds from the body
-//   //call local co2
-//   //map the field -> co2 json body
-//   //call co2
-//   //parse the respond back to the user
+  //call sendRequest in ./helper and get response
+
+
+
+  let response = await sendRequest(body);
+  console.log(JSON.stringify(response));
+  //http call to local co2
+
+
+
+  //get all input fileds from the body
+  //call local co2
+  //map the field -> co2 json body
+  //call co2
+  //parse the respond back to the user
 
 
 
 
-//   //const results = await createWpUpdate(body['user']['username'],body);
+  //const results = await createWpUpdate(body['user']['username'],body);
 
-//   // if (results){
-//   //   msg = 'Your update was successful.'
-//   // } else {
-//   //   msg = 'I am a failure but I do not know why.'
-//   // }
+  // if (results){
+  //   msg = 'Your update was successful.'
+  // } else {
+  //   msg = 'I am a failure but I do not know why.'
+  // }
 
-//   //message the user 
+  //message the user 
 
-//   try {
-//     await client.chat.postMessage({
-//       channel: user,
-//       text: JSON.stringify(response)
-//     });
-//   }
-//   catch (error) {
-//     console.error(error);
-//   }
+  try {
+    await client.chat.postMessage({
+      channel: user,
+      text: JSON.stringify(response)
+    });
+  }
+  catch (error) {
+    console.error(error);
+  }
 
-// });
+});
 
-// create a body3 for all input: {"input":{"name":"tidy-toucan-urp","kind":"Stack","inputs":{"customerType":"Internal","type":"Clustered","region":"us-east-1"},"templates":[{"name":"stack/cloud_delivery/cda","inputs":{"order":{"cloud":"aws","net_new":false,"idm":false,"hipaa":false,"ddaa":false,"encryption":false,"poc":true,"poc_type":"Custom","autobahn_lane":"","existing":{"noah":false,"idm":false,"im4gn_indexers":false,"i3en_indexers":false,"x6i_instances":false},"ingest":{"cloud":5,"es":0,"itsi":0,"pci":0,"vmware":0,"exchange":0}}}}],"mixins":[]}}
-// update modal view if /p2splunk the choice of cloud provider is aws
-// app.action('cloud_provider_input', async ({ body, ack, say, view }) => {
-//   await ack();
-//   let cloud_provider = body.actions[0].selected_option.value;
-//   let region = view.state.values.region.region_input.selected_option.value;
-//   let stack_name = view.state.values.stack_name.stackname_input.value;
-//   let details = view.state.values.multi_static_select['multi_static_select-action'].selected_options.map((option) => option.value).join(' ');
-//   let msg = JSON.stringify("");
-//   let response = await sendRequest(stack_name, cloud_provider, region, details);
-//   console.log(JSON.stringify(response));
-//   try {
-//     await say({
-//       "blocks": [
-//         {
-//           "type": "section",
-//           "text": {
-//             "type": "mrkdwn",
-//             "text": JSON.stringify(response)
-//           }
-//         }
-//       ]
-//     });
-//   }
-//   catch (error) {
-//     console.error(error);
-//   }
-// })
+//create a body3 for all input: {"input":{"name":"tidy-toucan-urp","kind":"Stack","inputs":{"customerType":"Internal","type":"Clustered","region":"us-east-1"},"templates":[{"name":"stack/cloud_delivery/cda","inputs":{"order":{"cloud":"aws","net_new":false,"idm":false,"hipaa":false,"ddaa":false,"encryption":false,"poc":true,"poc_type":"Custom","autobahn_lane":"","existing":{"noah":false,"idm":false,"im4gn_indexers":false,"i3en_indexers":false,"x6i_instances":false},"ingest":{"cloud":5,"es":0,"itsi":0,"pci":0,"vmware":0,"exchange":0}}}}],"mixins":[]}}
+//update modal view if /p2splunk the choice of cloud provider is aws
+app.action('cloud_provider_input', async ({ body, ack, say, view }) => {
+  await ack();
+  let cloud_provider = body.actions[0].selected_option.value;
+  let region = view.state.values.region.region_input.selected_option.value;
+  let stack_name = view.state.values.stack_name.stackname_input.value;
+  let details = view.state.values.multi_static_select['multi_static_select-action'].selected_options.map((option) => option.value).join(' ');
+  let msg = JSON.stringify("");
+  let response = await sendRequest(stack_name, cloud_provider, region, details);
+  console.log(JSON.stringify(response));
+  try {
+    await say({
+      "blocks": [
+        {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": JSON.stringify(response)
+          }
+        }
+      ]
+    });
+  }
+  catch (error) {
+    console.error(error);
+  }
+})
 
 
 
@@ -2813,25 +1708,55 @@ async function sendRequest_aws(body) {
   //option2: mimic cloudctl exchange the token -- go co2 lib
   const values = body.view.state.values;
   let stack_name = values.stack_name.stackname_input.value;
-  let cloud_provider = values.cloud_provider.cloud_provider_input.selected_option.value;
+  //let cloud_provider = values.cloud_provider.cloud_provider_input.selected_option.value;
+  let cloud_provider = userInputData.get("cloud_provider")
   let region = values.region.region_input.selected_option.value;
-  let details_netnew = values.details_netnew_tf.netnew_input.selected_option.value;
-  details_netnew = (details_netnew === 'true');
-  let details_ridm = values.details_ridm_tf.irdm_input.selected_option.value;
-  details_ridm = (details_ridm === 'true');
-  let details_hipaa = values.details_hipaa_tf.hipaa_input.selected_option.value;
-  details_hipaa = (details_hipaa === 'true');
-  let details_ddaa = values.details_ddaa_tf.ddaa_input.selected_option.value;
-  details_ddaa = (details_ddaa === 'true');
-  let details_encrption = values.details_encryption_tf.encryption_input.selected_option.value;
-  details_encrption = (details_encrption === 'true');
-  let details_poc = values.poc_tf.poc_tf_input.selected_option.value;
-  details_poc = (details_poc === 'true');
-  let existing_idm = (values.existing_idm_tf.existing_idm_input.selected_option.value === 'true');
-  let existing_noah = (values.existing_noah_tf.existing_noah_input.selected_option.value === 'true');
-  let existing_im4gn = (values.existing_im4gn_tf.existing_im4gn_input.selected_option.value === 'true');
-  let existing_i3en = (values.existing_i3en_tf.existing_i3en_input.selected_option.value === 'true');
-  let existing_x6i = (values.existing_x6i_tf.existing_x6i_input.selected_option.value === 'true');
+  let all_details = userInputData.get("details");
+  let details_netnew = false;
+  let details_ridm = false;
+  let details_hipaa = false;
+  let details_encrption = false;
+  let details_ddaa = false;
+  let details_poc = userInputData.get("poc_checkbox") || '';
+  if (all_details.includes("net_new")) {
+
+    details_netnew = true
+  }
+  if (all_details.includes("idm")) {
+
+    details_ridm = true
+  }
+  if (all_details.includes("hipaa")) {
+    details_hipaa = true
+  }
+  if (all_details.includes("ddaa")) {
+    details_ddaa = true
+  }
+  if (all_details.includes("encryption")) {
+    details_encrption = true
+  }
+  if (details_poc != '') {
+    details_poc = true
+  } else {
+    detail_poc = false
+  }
+  // let details_netnew = values.details_netnew_tf.netnew_input.selected_option.value;
+  // details_netnew = (details_netnew === 'true');
+  // let details_ridm = values.details_ridm_tf.irdm_input.selected_option.value;
+  // details_ridm = (details_ridm === 'true');
+  // let details_hipaa = values.details_hipaa_tf.hipaa_input.selected_option.value;
+  // details_hipaa = (details_hipaa === 'true');
+  // let details_ddaa = values.details_ddaa_tf.ddaa_input.selected_option.value;
+  // details_ddaa = (details_ddaa === 'true');
+  // let details_encrption = values.details_encryption_tf.encryption_input.selected_option.value;
+  // details_encrption = (details_encrption === 'true');
+  // let details_poc = values.poc_tf.poc_tf_input.selected_option.value;
+  // details_poc = (details_poc === 'true');
+  // let existing_idm = (values.existing_idm_tf.existing_idm_input.selected_option.value === 'true');
+  // let existing_noah = (values.existing_noah_tf.existing_noah_input.selected_option.value === 'true');
+  // let existing_im4gn = (values.existing_im4gn_tf.existing_im4gn_input.selected_option.value === 'true');
+  // let existing_i3en = (values.existing_i3en_tf.existing_i3en_input.selected_option.value === 'true');
+  // let existing_x6i = (values.existing_x6i_tf.existing_x6i_input.selected_option.value === 'true');
   let details_poc_type = values.poc_type.poc_type_input.value;
   let details_autobahn_lane = values.autobahn_lane.autobahn_lane_input.value;
   let cloud_num = Number(values.cloud_number.cloud_num_input.value);
@@ -2883,11 +1808,11 @@ async function sendRequest_aws(body) {
 
   body3["input"]["templates"][0]["inputs"]["order"]["existing"] = {}
 
-  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["noah"] = existing_noah
-  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["idm"] = existing_idm
-  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["im4gn_indexers"] = existing_im4gn
-  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["i3en_indexers"] = existing_i3en
-  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["x6i_instances"] = existing_x6i
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["noah"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["idm"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["im4gn_indexers"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["i3en_indexers"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["x6i_instances"] = false
   body3["input"]["templates"][0]["inputs"]["order"]["ingest"] = {}
   body3["input"]["templates"][0]["inputs"]["order"]["ingest"]["cloud"] = cloud_num
   body3["input"]["templates"][0]["inputs"]["order"]["ingest"]["es"] = es_num
@@ -2935,17 +1860,53 @@ async function sendRequest_gcp(body) {
   }
   const values = body.view.state.values;
   let stack_name = values.stack_name.stackname_input.value;
-  let cloud_provider = values.cloud_provider.cloud_provider_input.selected_option.value;
+  let cloud_provider = userInputData.get("cloud_provider")
   let region = values.region.region_input.selected_option.value;
-  let details_netnew = values.details_netnew_tf.netnew_input.selected_option.value;
-  details_netnew = (details_netnew === 'true');
-  let details_ridm = values.details_ridm_tf.irdm_input.selected_option.value;
-  details_ridm = (details_ridm === 'true');
-  let details_encrption = values.details_encryption_tf.encryption_input.selected_option.value;
-  details_encrption = (details_encrption === 'true');
-  let details_poc = values.poc_tf.poc_tf_input.selected_option.value;
-  details_poc = (details_poc === 'true');
-  let existing_idm = (values.existing_idm_tf.existing_idm_input.selected_option.value === 'true');
+  // let details_netnew = values.details_netnew_tf.netnew_input.selected_option.value;
+  // details_netnew = (details_netnew === 'true');
+  // let details_ridm = values.details_ridm_tf.irdm_input.selected_option.value;
+  // details_ridm = (details_ridm === 'true');
+  // let details_encrption = values.details_encryption_tf.encryption_input.selected_option.value;
+  // details_encrption = (details_encrption === 'true');
+  // let details_poc = values.poc_tf.poc_tf_input.selected_option.value;
+  // details_poc = (details_poc === 'true');
+  let all_details = userInputData.get("details");
+  let details_netnew = false;
+  let details_ridm = false;
+  let details_hipaa = false;
+  let details_encrption = false;
+  let details_ddaa = false;
+  let existing_idm = userInputData.get("existing_idm") || '';
+  let details_poc = userInputData.get("poc_checkbox") || '';
+  if (all_details.includes("net_new")) {
+
+    details_netnew = true
+  }
+  if (all_details.includes("idm")) {
+
+    details_ridm = true
+  }
+  if (all_details.includes("hipaa")) {
+    details_hipaa = true
+  }
+  if (all_details.includes("ddaa")) {
+    details_ddaa = true
+  }
+  if (all_details.includes("encryption")) {
+    details_encrption = true
+  }
+  if (details_poc != '') {
+    details_poc = true
+  } else {
+    detail_poc = false
+  }
+  if (existing_idm != '') {
+    existing_idm = true
+  } else {
+    existing_idm = false
+  }
+
+  // let existing_idm = (values.existing_idm_tf.existing_idm_input.selected_option.value === 'true');
   let cloud_num = Number(values.cloud_number.cloud_num_input.value);
   let es_num = Number(values.es_number.es_num_input.value);
   let itsi_num = Number(values.itsi_number.itsi_num_input.value);
@@ -3027,6 +1988,1479 @@ async function sendRequest_gcp(body) {
   console.log(response.data)
   return response.data
 }
+
+app.action('poc_checkbox', async ({ ack, body, client }) => {
+  try {
+    await ack();
+    const selectedValues = body.actions[0].selected_options.map((option) => option.value);
+    userInputData.set('poc_checkbox', selectedValues);
+    const updatedView = updateModalView_netnew(body);
+    console.log('Selected values of checkboxes:', selectedValues);
+
+  } catch (error) {
+    console.error('Error handling checkbox selection:', error);
+  }
+});
+
+app.action('details_aws_checkbox', async ({ ack, body, client }) => {
+  try {
+    // Acknowledge the checkbox selection
+    await ack();
+    const selectedValues = body.actions[0].selected_options.map((option) => option.value);
+    userInputData.set('details', selectedValues);
+    let updatedView = updateModalView_netnew(body);
+    console.log('Selected values of checkboxes:', selectedValues);
+    const ar = ['1', '2']
+    console.log(typeof Array.isArray(ar))
+    console.log('Selected values of checkboxesddd:', userInputData.get('details'));
+
+    if (selectedValues.includes('net_new')) {
+      await ack({
+        "response_action": "update",
+        "view": updatedView
+      });
+
+      await client.views.update({
+        // token: process.env.SLACK_BOT_TOKEN,
+        trigger_id: body.trigger_id,
+        response_action: "update",
+        view_id: body.view.id,
+        view: updatedView,
+        // hash:"156772938.1827394"
+      });
+    }
+
+
+    // Get the selected values of the checkboxes
+
+
+  } catch (error) {
+    console.error('Error handling checkbox selection:', error);
+  }
+});
+function updateModalView_netnew(body) {
+  // Create a new view object or modify the existing one based on the selected option
+  console.log(Array.isArray(userInputData.get('details')))
+  console.log((userInputData.get('details')).map((value) => ({ value })))
+
+  ini_v = generate_details_map(userInputData.get('details'))
+  let updatedView = {
+    type: 'modal',
+    callback_id: 'p2splunk-submit',
+    title: {
+      type: 'plain_text',
+      text: 'Product Packaging Splunk'
+    },
+    blocks: [{
+      type: "input",
+      block_id: 'stack_name',
+      label: {
+        type: 'plain_text',
+        text: 'Stack Name'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'stackname_input',
+        initial_value: userInputData['stack_name'] || ''
+      }
+    }, {
+      "type": "section",
+      "text": {
+        "type": "plain_text",
+        "text": "Choose a Cloud Provider",
+        "emoji": true,
+      }
+    }, {
+      "type": "actions",
+      "block_id": "three_buttons",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "AWS",
+            "emoji": true
+          },
+          "value": "aws",
+          "action_id": "button-action_aws"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "GCP",
+            "emoji": true
+          },
+          "value": "gcp",
+          "action_id": "button-action_gcp"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "FedRamp",
+            "emoji": true
+          },
+          "value": "fedramp",
+          "action_id": "button-action_fedramp"
+        }
+      ]
+    }, {
+      "type": "section",
+      "text": {
+        "type": "plain_text",
+        "text": "Details",
+        "emoji": true,
+
+      }
+    }, {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "checkboxes",
+          "options": [
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Net New*",
+                "emoji": true
+              },
+
+              "value": "net_new"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "Requesting IDM",
+                "emoji": true
+              },
+
+              "value": "idm"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "HIPAA/PIC",
+                "emoji": true
+              },
+
+              "value": "hipaa"
+            },
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "DDAA",
+                "emoji": true
+              },
+
+              "value": "ddaa"
+            }, {
+              "text": {
+                "type": "plain_text",
+                "text": "Encryption",
+                "emoji": true
+              },
+
+              "value": "encryption"
+            },
+          ],
+          "action_id": "details_aws_checkbox",
+          //"initial_options" :(userInputData.get('details')).map((value) => ({ text: { type: 'plain_text', text: value }, value })),
+          //   "initial_options": [
+          //     {
+          //         "text": {
+          //             "type": "plain_text",
+          //             "text": "Net New*",
+          //             "emoji": true
+          //         },
+          //         "value": "net_new"
+          //     },
+          //     {
+          //         "text": {
+          //             "type": "plain_text",
+          //             "text": "Requesting IDM",
+          //             "emoji": true
+          //         },
+          //         "value": "idm"
+          //     },{
+          //       text: { type: 'plain_text', text: 'DDAA', emoji: true },
+          //       value: 'ddaa'
+          //     }
+
+          // ],
+
+          "initial_options": ini_v,
+        },
+
+      ]
+    }, {
+      type: "input",
+      block_id: 'region',
+      element: {
+        type: "static_select",
+        placeholder: {
+          type: "plain_text",
+          text: "Select a region",
+          emoji: true
+        },
+        options: [
+          {
+            text: {
+              type: "plain_text",
+              text: "us-east-1 (N. Virginia)",
+              emoji: true
+            },
+            value: "us-east-1"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "us-west-2 (Oregon)",
+              emoji: true
+            },
+            value: "us-west-2"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "ca-central-1 (Canada)",
+              emoji: true
+            },
+            value: "ca-central-1"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "eu-west-1 (Ireland)",
+              emoji: true
+            },
+            value: "eu-west-1"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "eu-west-2 (London)",
+              emoji: true
+            },
+            value: "eu-west-2"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "eu-west-3 (Paris)",
+              emoji: true
+            },
+            value: "eu-west-3"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "eu-central-1 (Frankfurt)",
+              emoji: true
+            },
+            value: "eu-central-1"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "eu-north-1 (Stockholm)",
+              emoji: true
+            },
+            value: "eu-north-1"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "ap-south-1 (Mumbai)",
+              emoji: true
+            },
+            value: "ap-south-1"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "ap-northeast-1 (Tokyo)",
+              emoji: true
+            },
+            value: "ap-norteast-1"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "ap-northeast-2 (Seoul)",
+              emoji: true
+            },
+            value: "ap-norteast-2"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "ap-southeast-1 (Singapore)",
+              emoji: true
+            },
+            value: "ap-southeast-1"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "ap-southeast-2 (Sydney)",
+              emoji: true
+            },
+            value: "ap-southeast-2"
+          }
+        ],
+        action_id: "region_input",
+        initial_option: {
+          text: {
+            type: "plain_text",
+            text: "us-east-1 (N. Virginia)",
+            emoji: true
+          },
+          value: "us-east-1"
+        },
+      },
+      label: {
+        type: "plain_text",
+        text: "Region",
+        emoji: true
+      }
+    }, {
+      "type": "section",
+      "text": {
+        "type": "plain_text",
+        "text": "POC(t/f)",
+        "emoji": true,
+
+      }
+    },
+    {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "checkboxes",
+          "options": [
+            {
+              "text": {
+                "type": "plain_text",
+                "text": "POC",
+                "emoji": true
+              },
+
+              "value": "poc"
+            },
+
+          ],
+          "action_id": "poc_checkbox",
+
+        },
+
+      ]
+    }, {
+      type: "input",
+      block_id: 'poc_type',
+      element: {
+        type: "static_select",
+        placeholder: {
+          type: "plain_text",
+          text: "Choose a poc type",
+          emoji: true
+        },
+        options: [
+          {
+            text: {
+              type: "plain_text",
+              text: "N/A",
+              emoji: true
+            },
+            value: "n/a"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "Autobahn",
+              emoji: true
+            },
+            value: "autobahn"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "Custom",
+              emoji: true
+            },
+            value: "custom"
+          }
+        ],
+        action_id: "poc_type_input"
+      },
+      label: {
+        type: "plain_text",
+        text: "POC Type",
+        emoji: true
+      }
+    }, {
+      type: "input",
+      block_id: 'autobahn_lane',
+      element: {
+        type: "static_select",
+        placeholder: {
+          type: "plain_text",
+          text: "Select a Autobahn line",
+          emoji: true
+        },
+        options: [
+          {
+            text: {
+              type: "plain_text",
+              text: "AWS Monitoring POV",
+              emoji: true
+            },
+            value: "AWS Monitoring POV"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "Contact Center Analytics POV",
+              emoji: true
+            },
+            value: "Contact Center Analytics POV"
+          }, {
+            text: {
+              type: "plain_text",
+              text: "Enterprise Security POV",
+              emoji: true
+            },
+            value: "Enterprise Security POV"
+          }, {
+            text: {
+              type: "plain_text",
+              text: "Infosec App POV",
+              emoji: true
+            },
+            value: "Infosec App POV"
+          }, {
+            text: {
+              type: "plain_text",
+              text: "Infrastructure Monitoring and Troubleshooting POV",
+              emoji: true
+            },
+            value: "Infrastructure Monitoring and Troubleshootng POV"
+          }, {
+            text: {
+              type: "plain_text",
+              text: "IT Foundations POV",
+              emoji: true
+            },
+            value: "IT Foundations POV"
+          }, {
+            text: {
+              type: "plain_text",
+              text: "IT Ops Essentials POV",
+              emoji: true
+            },
+            value: "IT Ops Essentials POV"
+          }, {
+            text: {
+              type: "plain_text",
+              text: "ITOM Modernization POV",
+              emoji: true
+            },
+            value: "ITOM Modernization POV"
+          }, {
+            text: {
+              type: "plain_text",
+              text: "OT Security POV",
+              emoji: true
+            },
+            value: "OT Security POV"
+          }, {
+            text: {
+              type: "plain_text",
+              text: "Remote Work Insights POV",
+              emoji: true
+            },
+            value: "Remote Work Insights POV"
+          }, {
+            text: {
+              type: "plain_text",
+              text: "Security Essentials POV",
+              emoji: true
+            },
+            value: "Security Essentials POV"
+          }, {
+            text: {
+              type: "plain_text",
+              text: "Website Fraud POV",
+              emoji: true
+            },
+            value: "Website Fraud POV"
+          }, {
+            text: {
+              type: "plain_text",
+              text: "Website Operations POV",
+              emoji: true
+            },
+            value: "Website Operations POV"
+          }
+        ],
+        action_id: "autobahn_lane_input"
+      },
+      label: {
+        type: "plain_text",
+        text: "Autobaun Line",
+        emoji: true
+      }
+    }, {
+      type: "input",
+      block_id: 'entitlements',
+      element: {
+        type: "static_select",
+        placeholder: {
+          type: "plain_text",
+          text: "Select an entitlement",
+          emoji: true
+        },
+        options: [
+          {
+            text: {
+              type: "plain_text",
+              text: "Ingest",
+              emoji: true
+            },
+            value: "ingest"
+          },
+          {
+            text: {
+              type: "plain_text",
+              text: "SVCs",
+              emoji: true
+            },
+            value: "svcs"
+          },
+
+        ],
+        action_id: "entitlements_input",
+        initial_option: {
+          text: {
+            type: 'plain_text',
+            text: 'Ingest',
+            emoji: true,
+          },
+          value: 'ingest',
+        },
+      },
+      label: {
+        type: "plain_text",
+        text: "Entitlements",
+        emoji: true
+      }
+    }, {
+      type: "input",
+      block_id: 'cloud_number',
+      label: {
+        type: 'plain_text',
+        text: 'Cloud'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'cloud_num_input',
+        initial_value: '5'
+      }
+    }, {
+      type: "input",
+      block_id: 'es_number',
+      label: {
+        type: 'plain_text',
+        text: 'ES'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'es_num_input',
+        initial_value: '0'
+      }
+    }, {
+      type: "input",
+      block_id: 'itsi_number',
+      label: {
+        type: 'plain_text',
+        text: 'ITSI'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'itsi_num_input',
+        initial_value: '0'
+      }
+    }, {
+      type: "input",
+      block_id: 'pci_number',
+      label: {
+        type: 'plain_text',
+        text: 'PCI'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'pci_num_input',
+        initial_value: '0'
+      }
+    }, {
+      type: "input",
+      block_id: 'vmware_number',
+      label: {
+        type: 'plain_text',
+        text: 'VMWare'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'vmware_num_input',
+        initial_value: '0'
+      }
+    }, {
+      type: "input",
+      block_id: 'exchange_number',
+      label: {
+        type: 'plain_text',
+        text: 'Exchange'
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: 'exchange_num_input',
+        initial_value: '0'
+      }
+    },
+      // Add other blocks as needed
+    ], submit: {
+      type: 'plain_text',
+      text: 'Submit',
+    }
+  };
+  let cloud_provider = userInputData.get("cloud_provider");
+  if (cloud_provider == "gcp") {
+    updatedView = {
+      type: 'modal',
+      callback_id: 'p2splunk-submit',
+      title: {
+        type: 'plain_text',
+        text: 'Product Packaging Splunk'
+      },
+      blocks: [{
+        type: "input",
+        block_id: 'stack_name',
+        label: {
+          type: 'plain_text',
+          text: 'Stack Name'
+        },
+        element: {
+          type: 'plain_text_input',
+          action_id: 'stackname_input',
+          initial_value: userInputData['stack_name'] || ''
+        }
+      }, {
+        "type": "section",
+        "text": {
+          "type": "plain_text",
+          "text": "Choose a Cloud Provider",
+          "emoji": true,
+        }
+      }, {
+        "type": "actions",
+        "block_id": "three_buttons",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "AWS",
+              "emoji": true
+            },
+            "value": "aws",
+            "action_id": "button-action_aws"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "GCP",
+              "emoji": true
+            },
+            "value": "gcp",
+            "action_id": "button-action_gcp"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "FedRamp",
+              "emoji": true
+            },
+            "value": "fedramp",
+            "action_id": "button-action_fedramp"
+          }
+        ]
+      }, {
+        "type": "section",
+        "text": {
+          "type": "plain_text",
+          "text": "Details",
+          "emoji": true,
+
+        }
+      }, {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "checkboxes",
+            "options": [
+              {
+                "text": {
+                  "type": "plain_text",
+                  "text": "Net New*",
+                  "emoji": true
+                },
+
+                "value": "net_new"
+              },
+              {
+                "text": {
+                  "type": "plain_text",
+                  "text": "Requesting IDM",
+                  "emoji": true
+                },
+
+                "value": "idm"
+              },
+              {
+                "text": {
+                  "type": "plain_text",
+                  "text": "Encryption",
+                  "emoji": true
+                },
+
+                "value": "encryption"
+              },
+            ],
+            "action_id": "details_aws_checkbox",
+            //"initial_options" :(userInputData.get('details')).map((value) => ({ text: { type: 'plain_text', text: value }, value })),
+            //   "initial_options": [
+            //     {
+            //         "text": {
+            //             "type": "plain_text",
+            //             "text": "Net New*",
+            //             "emoji": true
+            //         },
+            //         "value": "net_new"
+            //     },
+            //     {
+            //         "text": {
+            //             "type": "plain_text",
+            //             "text": "Requesting IDM",
+            //             "emoji": true
+            //         },
+            //         "value": "idm"
+            //     },{
+            //       text: { type: 'plain_text', text: 'DDAA', emoji: true },
+            //       value: 'ddaa'
+            //     }
+
+            // ],
+
+            "initial_options": ini_v,
+          },
+
+        ]
+      }, {
+        type: "input",
+        block_id: 'region',
+        element: {
+          type: "static_select",
+          placeholder: {
+            type: "plain_text",
+            text: "Select a region",
+            emoji: true
+          },
+          options: [
+            {
+              text: {
+                type: "plain_text",
+                text: "us-central-1 (lowa)",
+                emoji: true
+              },
+              value: "us-central1"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "northamerica-northeast1 (Montrreal)",
+                emoji: true
+              },
+              value: "northamerica-northest1"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "europe-west1 (Belgium)",
+                emoji: true
+              },
+              value: "europe-west1"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "europe-west3 (Frankfrut)",
+                emoji: true
+              },
+              value: "europe-west3"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "europe-west2 (London)",
+                emoji: true
+              },
+              value: "europe-west2"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "asia-southeast1 (Singapore)",
+                emoji: true
+              },
+              value: "asia-southeast1"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "australia-southeast1 (Syndney)",
+                emoji: true
+              },
+              value: "australia-southeast1"
+            },
+
+
+          ],
+          action_id: "region_input",
+          initial_option: {
+            text: {
+              type: "plain_text",
+              text: "us-central-1 (lowa)",
+              emoji: true
+            },
+            value: "us-central1"
+          },
+        },
+        label: {
+          type: "plain_text",
+          text: "Region",
+          emoji: true
+        }
+      }, {
+        "type": "section",
+        "text": {
+          "type": "plain_text",
+          "text": "POC(t/f)",
+          "emoji": true,
+
+        }
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "checkboxes",
+            "options": [
+              {
+                "text": {
+                  "type": "plain_text",
+                  "text": "POC",
+                  "emoji": true
+                },
+
+                "value": "poc"
+              },
+
+            ],
+            "action_id": "poc_checkbox",
+
+          },
+
+        ]
+      }, {
+        type: "input",
+        block_id: 'entitlements',
+        element: {
+          type: "static_select",
+          placeholder: {
+            type: "plain_text",
+            text: "Select an entitlement",
+            emoji: true
+          },
+          options: [
+            {
+              text: {
+                type: "plain_text",
+                text: "Ingest",
+                emoji: true
+              },
+              value: "ingest"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "SVCs",
+                emoji: true
+              },
+              value: "svcs"
+            },
+
+          ],
+          action_id: "entitlements_input",
+          initial_option: {
+            text: {
+              type: 'plain_text',
+              text: 'Ingest',
+              emoji: true,
+            },
+            value: 'ingest',
+          },
+        },
+        label: {
+          type: "plain_text",
+          text: "Entitlements",
+          emoji: true
+        }
+      }, {
+        type: "input",
+        block_id: 'cloud_number',
+        label: {
+          type: 'plain_text',
+          text: 'Cloud'
+        },
+        element: {
+          type: 'plain_text_input',
+          action_id: 'cloud_num_input',
+          initial_value: '5'
+        }
+      }, {
+        type: "input",
+        block_id: 'es_number',
+        label: {
+          type: 'plain_text',
+          text: 'ES'
+        },
+        element: {
+          type: 'plain_text_input',
+          action_id: 'es_num_input',
+          initial_value: '0'
+        }
+      }, {
+        type: "input",
+        block_id: 'itsi_number',
+        label: {
+          type: 'plain_text',
+          text: 'ITSI'
+        },
+        element: {
+          type: 'plain_text_input',
+          action_id: 'itsi_num_input',
+          initial_value: '0'
+        }
+      }, {
+        type: "input",
+        block_id: 'pci_number',
+        label: {
+          type: 'plain_text',
+          text: 'PCI'
+        },
+        element: {
+          type: 'plain_text_input',
+          action_id: 'pci_num_input',
+          initial_value: '0'
+        }
+      }, {
+        type: "input",
+        block_id: 'vmware_number',
+        label: {
+          type: 'plain_text',
+          text: 'VMWare'
+        },
+        element: {
+          type: 'plain_text_input',
+          action_id: 'vmware_num_input',
+          initial_value: '0'
+        }
+      }, {
+        type: "input",
+        block_id: 'exchange_number',
+        label: {
+          type: 'plain_text',
+          text: 'Exchange'
+        },
+        element: {
+          type: 'plain_text_input',
+          action_id: 'exchange_num_input',
+          initial_value: '0'
+        }
+      },
+        // Add other blocks as needed
+      ], submit: {
+        type: 'plain_text',
+        text: 'Submit',
+      }
+    };
+  }else if(cloud_provider == "fedramp"){
+    updatedView = {
+      type: 'modal',
+      callback_id: 'p2splunk-submit',
+      title: {
+        type: 'plain_text',
+        text: 'Product Packaging Splunk'
+      },
+      blocks: [{
+        type: "input",
+        block_id: 'stack_name',
+        label: {
+          type: 'plain_text',
+          text: 'Stack Name'
+        },
+        element: {
+          type: 'plain_text_input',
+          action_id: 'stackname_input',
+          initial_value: userInputData['stack_name'] || ''
+        }
+      }, {
+        "type": "section",
+        "text": {
+          "type": "plain_text",
+          "text": "Choose a Cloud Provider",
+          "emoji": true,
+        }
+      }, {
+        "type": "actions",
+        "block_id": "three_buttons",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "AWS",
+              "emoji": true
+            },
+            "value": "aws",
+            "action_id": "button-action_aws"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "GCP",
+              "emoji": true
+            },
+            "value": "gcp",
+            "action_id": "button-action_gcp"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "FedRamp",
+              "emoji": true
+            },
+            "value": "fedramp",
+            "action_id": "button-action_fedramp"
+          }
+        ]
+      }, {
+        "type": "section",
+        "text": {
+          "type": "plain_text",
+          "text": "Details",
+          "emoji": true,
+
+        }
+      }, {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "checkboxes",
+            "options": [
+              {
+                "text": {
+                  "type": "plain_text",
+                  "text": "Net New*",
+                  "emoji": true
+                },
+
+                "value": "net_new"
+              },
+              {
+                "text": {
+                  "type": "plain_text",
+                  "text": "Requesting IDM",
+                  "emoji": true
+                },
+
+                "value": "idm"
+              },
+              {
+                "text": {
+                  "type": "plain_text",
+                  "text": "Encryption",
+                  "emoji": true
+                },
+
+                "value": "encryption"
+              },
+            ],
+            "action_id": "details_aws_checkbox",
+            //"initial_options" :(userInputData.get('details')).map((value) => ({ text: { type: 'plain_text', text: value }, value })),
+            //   "initial_options": [
+            //     {
+            //         "text": {
+            //             "type": "plain_text",
+            //             "text": "Net New*",
+            //             "emoji": true
+            //         },
+            //         "value": "net_new"
+            //     },
+            //     {
+            //         "text": {
+            //             "type": "plain_text",
+            //             "text": "Requesting IDM",
+            //             "emoji": true
+            //         },
+            //         "value": "idm"
+            //     },{
+            //       text: { type: 'plain_text', text: 'DDAA', emoji: true },
+            //       value: 'ddaa'
+            //     }
+
+            // ],
+
+            "initial_options": ini_v,
+          },
+
+        ]
+      }, {
+        type: "input",
+        block_id: 'region',
+        element: {
+          type: "static_select",
+          placeholder: {
+            type: "plain_text",
+            text: "Select a region",
+            emoji: true
+          },
+          options: [
+            {
+              text: {
+                type: "plain_text",
+                text: "us-central-1 (lowa)",
+                emoji: true
+              },
+              value: "us-central1"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "northamerica-northeast1 (Montrreal)",
+                emoji: true
+              },
+              value: "northamerica-northest1"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "europe-west1 (Belgium)",
+                emoji: true
+              },
+              value: "europe-west1"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "europe-west3 (Frankfrut)",
+                emoji: true
+              },
+              value: "europe-west3"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "europe-west2 (London)",
+                emoji: true
+              },
+              value: "europe-west2"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "asia-southeast1 (Singapore)",
+                emoji: true
+              },
+              value: "asia-southeast1"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "australia-southeast1 (Syndney)",
+                emoji: true
+              },
+              value: "australia-southeast1"
+            },
+
+
+          ],
+          action_id: "region_input",
+          initial_option: {
+            text: {
+              type: "plain_text",
+              text: "us-central-1 (lowa)",
+              emoji: true
+            },
+            value: "us-central1"
+          },
+        },
+        label: {
+          type: "plain_text",
+          text: "Region",
+          emoji: true
+        }
+      }, 
+      {
+        type: "input",
+        block_id: 'redramp_type',
+        element: {
+          type: "static_select",
+          placeholder: {
+            type: "plain_text",
+            text: "Select a FredRamp Type",
+            emoji: true
+          },
+          options: [
+            {
+              text: {
+                type: "plain_text",
+                text: "High",
+                emoji: true
+              },
+              value: "high"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "Moderate",
+                emoji: true
+              },
+              value: "moderate"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "IL5",
+                emoji: true
+              },
+              value: "il5"
+            },
+  
+  
+          ],
+          action_id: "region_input",
+          initial_option: {
+            text: {
+              type: "plain_text",
+              text: "High",
+              emoji: true
+            },
+            value: "high"
+          },
+        },
+        label: {
+          type: "plain_text",
+          text: "Fedramp Type",
+          emoji: true
+        }
+      },{
+        type: "input",
+        block_id: 'customer_classification',
+        element: {
+          type: "static_select",
+          placeholder: {
+            type: "plain_text",
+            text: "Select a Customer Classification",
+            emoji: true
+          },
+          options: [
+            {
+              text: {
+                type: "plain_text",
+                text: "U.S. Gov: DOD/IC",
+                emoji: true
+              },
+              value: "u.s.gov:dod/ic"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "State and Local Gov",
+                emoji: true
+              },
+              value: "state and local gov"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "Non-Government",
+                emoji: true
+              },
+              value: "non-government"
+            },
+  
+  
+          ],
+          action_id: "customer_classification_input",
+          initial_option: {
+            text: {
+              type: "plain_text",
+              text: "U.S. Gov: DOD/IC",
+              emoji: true
+            },
+            value: "u.s.gov:dod/ic"
+          },
+        },
+        label: {
+          type: "plain_text",
+          text: "Customer Classification",
+          emoji: true
+        }
+      }, 
+       {
+        type: "input",
+        block_id: 'entitlements',
+        element: {
+          type: "static_select",
+          placeholder: {
+            type: "plain_text",
+            text: "Select an entitlement",
+            emoji: true
+          },
+          options: [
+            {
+              text: {
+                type: "plain_text",
+                text: "Ingest",
+                emoji: true
+              },
+              value: "ingest"
+            },
+            {
+              text: {
+                type: "plain_text",
+                text: "SVCs",
+                emoji: true
+              },
+              value: "svcs"
+            },
+
+          ],
+          action_id: "entitlements_input",
+          initial_option: {
+            text: {
+              type: 'plain_text',
+              text: 'Ingest',
+              emoji: true,
+            },
+            value: 'ingest',
+          },
+        },
+        label: {
+          type: "plain_text",
+          text: "Entitlements",
+          emoji: true
+        }
+      }, {
+        type: "input",
+        block_id: 'cloud_number',
+        label: {
+          type: 'plain_text',
+          text: 'Cloud'
+        },
+        element: {
+          type: 'plain_text_input',
+          action_id: 'cloud_num_input',
+          initial_value: '5'
+        }
+      }, {
+        type: "input",
+        block_id: 'es_number',
+        label: {
+          type: 'plain_text',
+          text: 'ES'
+        },
+        element: {
+          type: 'plain_text_input',
+          action_id: 'es_num_input',
+          initial_value: '0'
+        }
+      }, {
+        type: "input",
+        block_id: 'itsi_number',
+        label: {
+          type: 'plain_text',
+          text: 'ITSI'
+        },
+        element: {
+          type: 'plain_text_input',
+          action_id: 'itsi_num_input',
+          initial_value: '0'
+        }
+      }, {
+        type: "input",
+        block_id: 'pci_number',
+        label: {
+          type: 'plain_text',
+          text: 'PCI'
+        },
+        element: {
+          type: 'plain_text_input',
+          action_id: 'pci_num_input',
+          initial_value: '0'
+        }
+      }, {
+        type: "input",
+        block_id: 'vmware_number',
+        label: {
+          type: 'plain_text',
+          text: 'VMWare'
+        },
+        element: {
+          type: 'plain_text_input',
+          action_id: 'vmware_num_input',
+          initial_value: '0'
+        }
+      }, {
+        type: "input",
+        block_id: 'exchange_number',
+        label: {
+          type: 'plain_text',
+          text: 'Exchange'
+        },
+        element: {
+          type: 'plain_text_input',
+          action_id: 'exchange_num_input',
+          initial_value: '0'
+        }
+      },
+        // Add other blocks as needed
+      ], submit: {
+        type: 'plain_text',
+        text: 'Submit',
+      }
+    };
+  }
+  return updatedView;
+}
+
+
+
 //update modal
 app.view('p2splunk-submit', async ({ ack, body, view, client }) => {
   // Acknowledge the action
@@ -3039,9 +3473,10 @@ app.view('p2splunk-submit', async ({ ack, body, view, client }) => {
 
   //call sendRequest in ./helper and get response
   const values = body.view.state.values;
- //userInputData['stack_name'] = "aws";
+  //userInputData['stack_name'] = "aws";
 
-  let cloud_provider = values.cloud_provider.cloud_provider_input.selected_option.value;
+  //let cloud_provider = values.cloud_provider.cloud_provider_input.selected_option.value;
+  let cloud_provider = userInputData.get("cloud_provider")
   let response = ""
   if (cloud_provider == "aws") {
     response = await sendRequest_aws(body);
