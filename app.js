@@ -1,13 +1,6 @@
 const { App } = require('@slack/bolt');
-//const helper = require('./helper')
 const axios = require('axios');
 const fs = require('fs');
-//import AwsRegion from './class/AwsRegion'
-/* 
-This sample slack application uses SocketMode
-For the companion getting started setup guide, 
-see: https://slack.dev/bolt-js/tutorial/getting-started 
-*/
 
 // Initializes your app with your bot token and app token
 const app = new App({
@@ -676,7 +669,7 @@ app.action('button-action_aws', async ({ ack, body, context, client }) => {
     // const selectedOption = values.three_buttons.button-action_aws.value;
     const selectedOption = body.actions[0].value;
     userInputData.set('cloud_provider', selectedOption);
-    const updatedView = updateModalView(body, selectedOption);
+    //const updatedView = updateModalView(body, selectedOption);
     userInputData["cloud_provider"] = selectedOption
   } catch (error) {
     console.error('Error handling action:', error);
@@ -1267,12 +1260,12 @@ function updateModalView_fedramp(body, selectedOption) {
     }, 
     {
       type: "input",
-      block_id: 'redramp_type',
+      block_id: 'fedramp_type',
       element: {
         type: "static_select",
         placeholder: {
           type: "plain_text",
-          text: "Select a FredRamp Type",
+          text: "Select a FedRamp Type",
           emoji: true
         },
         options: [
@@ -1298,12 +1291,12 @@ function updateModalView_fedramp(body, selectedOption) {
               text: "IL5",
               emoji: true
             },
-            value: "il5"
+            value: "IL5"
           },
 
 
         ],
-        action_id: "region_input",
+        action_id: "fedramp_type_input",
         initial_option: {
           text: {
             type: "plain_text",
@@ -1332,10 +1325,10 @@ function updateModalView_fedramp(body, selectedOption) {
           {
             text: {
               type: "plain_text",
-              text: "U.S. Gov: DOD/IC",
+              text: "U.S. Gov: DoD / IC",
               emoji: true
             },
-            value: "u.s.gov:dod/ic"
+            value: "U.S. Gov: DoD / IC"
           },
           {
             text: {
@@ -1343,7 +1336,7 @@ function updateModalView_fedramp(body, selectedOption) {
               text: "State and Local Gov",
               emoji: true
             },
-            value: "state and local gov"
+            value: "State and Local Gov"
           },
           {
             text: {
@@ -1351,7 +1344,7 @@ function updateModalView_fedramp(body, selectedOption) {
               text: "Non-Government",
               emoji: true
             },
-            value: "non-government"
+            value: "Non-Government"
           },
 
 
@@ -1360,10 +1353,10 @@ function updateModalView_fedramp(body, selectedOption) {
         initial_option: {
           text: {
             type: "plain_text",
-            text: "U.S. Gov: DOD/IC",
+            text: "U.S. Gov: DoD / IC",
             emoji: true
           },
-          value: "u.s.gov:dod/ic"
+          value: "U.S. Gov: DoD / IC"
         },
       },
       label: {
@@ -1989,6 +1982,160 @@ async function sendRequest_gcp(body) {
   return response.data
 }
 
+async function sendRequest_fedramp(body) {
+  const local_url = 'http://localhost:8443/v3/translation/translate-order/stack'
+  const url = 'https://api.co2.lve.splunkcloud.systems/v3/translation/translate-order/stack'
+  //convert this to js code: echo $(cat ~/.cloudctl/token_prod)
+  //const token = fs.readFileSync(' ~/.cloudctl/token_prod', 'utf8');
+
+  const token = () => fs.readFileSync(require.resolve("~/.cloudctl/token_prod"), { encoding: "utf8" });
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+
+    }
+  }
+  const values = body.view.state.values;
+  let stack_name = values.stack_name.stackname_input.value;
+  let cloud_provider = userInputData.get("cloud_provider")
+  let region = values.region.region_input.selected_option.value;
+  // let details_netnew = values.details_netnew_tf.netnew_input.selected_option.value;
+  // details_netnew = (details_netnew === 'true');
+  // let details_ridm = values.details_ridm_tf.irdm_input.selected_option.value;
+  // details_ridm = (details_ridm === 'true');
+  // let details_encrption = values.details_encryption_tf.encryption_input.selected_option.value;
+  // details_encrption = (details_encrption === 'true');
+  // let details_poc = values.poc_tf.poc_tf_input.selected_option.value;
+  // details_poc = (details_poc === 'true');
+  let all_details = userInputData.get("details");
+  let details_netnew = false;
+  let details_ridm = false;
+  let details_hipaa = false;
+  let details_encrption = false;
+  let details_ddaa = false;
+  let existing_idm = userInputData.get("existing_idm") || '';
+  let existing_x6i = userInputData.get("existing_x6i") || '';
+  let details_poc = userInputData.get("poc_checkbox") || '';
+  if (all_details.includes("net_new")) {
+
+    details_netnew = true
+  }
+  if (all_details.includes("idm")) {
+
+    details_ridm = true
+  }
+  if (all_details.includes("hipaa")) {
+    details_hipaa = true
+  }
+  if (all_details.includes("ddaa")) {
+    details_ddaa = true
+  }
+  if (all_details.includes("encryption")) {
+    details_encrption = true
+  }
+  if (details_poc != '') {
+    details_poc = true
+  } else {
+    detail_poc = false
+  }
+  if (existing_idm != '') {
+    existing_idm = true
+  } else {
+    existing_idm = false
+  }
+  if (existing_x6i != '') {
+    existing_x6i = true
+  } else {
+    existing_x6i = false
+  }
+  let fedramp_type = values.fedramp_type.fedramp_type_input.selected_option.value;
+  let customer_classification = values.customer_classification.customer_classification_input.selected_option.value;
+  // let existing_idm = (values.existing_idm_tf.existing_idm_input.selected_option.value === 'true');
+  let cloud_num = Number(values.cloud_number.cloud_num_input.value);
+  let es_num = Number(values.es_number.es_num_input.value);
+  let itsi_num = Number(values.itsi_number.itsi_num_input.value);
+  let pci_num = Number(values.pci_number.pci_num_input.value);
+  let vmware_num = Number(values.vmware_number.vmware_num_input.value);
+  let exchange_num = Number(values.exchange_number.exchange_num_input.value);
+
+
+  // let details_
+  //let details_
+  //get all values of multiple selection action id "details_input"
+  // let details = values.details_input.selected_options.value.map((option) => option.value).join(' ');
+  //error here is TypeError: Cannot read properties of undefined (reading 'multi_static_select-action', how to fix it
+  //let details = values.multi_static_select['details_input'].selected_options.map((option) => option.value).join(' ');
+  console.log(cloud_provider);
+  console.log(stack_name);
+  console.log(region);
+  console.log(typeof details_netnew);
+  // create a body3 for all input: {"input":{"name":"tidy-toucan-urp","kind":"Stack","inputs":{"customerType":"Internal","type":"Clustered","region":"us-east-1"},"templates":[{"name":"stack/cloud_delivery/cda","inputs":{"order":{"cloud":"aws","net_new":true,"idm":false,"hipaa":false,"ddaa":false,"encryption":false,"poc":true,"poc_type":"Custom","autobahn_lane":"","existing":{"noah":false,"idm":false,"im4gn_indexers":false,"i3en_indexers":false,"x6i_instances":false},"ingest":{"cloud":5,"es":0,"itsi":0,"pci":0,"vmware":0,"exchange":0}}}}],"mixins":[]}}
+  // create a body4 for all input: {"input":{"name":"worthy-wolverine-n1y","kind":"Stack","inputs":{"customerType":"Internal","type":"Clustered","region":"us-central1"},"templates":[{"name":"stack/cloud_delivery/cda","inputs":{"order":{"cloud":"gcp","net_new":false,"idm":true,"hipaa":false,"ddaa":false,"encryption":false,"poc":false,"poc_type":"","autobahn_lane":"","existing":{"noah":true,"idm":false,"im4gn_indexers":true,"i3en_indexers":false,"x6i_instances":false},"ingest":{"cloud":5,"es":0,"itsi":0,"pci":0,"vmware":0,"exchange":0}}}}],"mixins":[]}}
+  let body3 = {}
+  body3["input"] = {}
+  body3["input"]["name"] = stack_name
+  body3["input"]["kind"] = 'Stack'
+  body3["input"]["inputs"] = {}
+  body3["input"]["inputs"]["customerType"] = 'Internal'
+  body3["input"]["inputs"]["type"] = 'Clustered'
+  body3["input"]["inputs"]["region"] = region
+  body3["input"]["templates"] = []
+  body3["input"]["templates"][0] = {}
+  body3["input"]["templates"][0]["name"] = 'stack/cloud_delivery/cda'
+  body3["input"]["templates"][0]["inputs"] = {}
+  body3["input"]["templates"][0]["inputs"]["order"] = {}
+  body3["input"]["templates"][0]["inputs"]["order"]["cloud"] = cloud_provider
+  body3["input"]["templates"][0]["inputs"]["order"]["net_new"] = details_netnew
+  body3["input"]["templates"][0]["inputs"]["order"]["idm"] = details_ridm
+  body3["input"]["templates"][0]["inputs"]["order"]["hipaa"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["ddaa"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["encryption"] = details_encrption
+  body3["input"]["templates"][0]["inputs"]["order"]["poc"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["poc_type"] = ""
+  body3["input"]["templates"][0]["inputs"]["order"]["fedramp_type"] = fedramp_type
+  body3["input"]["templates"][0]["inputs"]["order"]["customer_classification"] = customer_classification
+
+  body3["input"]["templates"][0]["inputs"]["order"]["autobahn_lane"] = ""
+  console.log(JSON.stringify(body3))
+  console.log(fedramp_type)
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"] = {}
+
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["noah"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["idm"] = existing_idm
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["im4gn_indexers"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["i3en_indexers"] = false
+  body3["input"]["templates"][0]["inputs"]["order"]["existing"]["x6i_instances"] = existing_x6i
+  body3["input"]["templates"][0]["inputs"]["order"]["ingest"] = {}
+  body3["input"]["templates"][0]["inputs"]["order"]["ingest"]["cloud"] = cloud_num
+  body3["input"]["templates"][0]["inputs"]["order"]["ingest"]["es"] = es_num
+  body3["input"]["templates"][0]["inputs"]["order"]["ingest"]["itsi"] = itsi_num
+  body3["input"]["templates"][0]["inputs"]["order"]["ingest"]["pci"] = pci_num
+  body3["input"]["templates"][0]["inputs"]["order"]["ingest"]["vmware"] = vmware_num
+  body3["input"]["templates"][0]["inputs"]["order"]["ingest"]["exchange"] = exchange_num
+  body3["input"]["mixins"] = []
+
+
+  console.log(JSON.stringify(body3))
+  console.log(body3["input"]["templates"])
+  console.log(body3["input"]["templates"][0]["inputs"]["order"])
+  const body2 = {}
+  body2["input"] = {}
+  body2["input"]["name"] = 'sampleco'
+  body2["input"]["inputs"] = {}
+  body2["input"]["inputs"]["customerType"] = 'Dev'
+  body2["input"]["inputs"]["region"] = 'us-east-1'
+
+
+
+
+
+  //how to fix the issue:Identifier 'body' has already been declared
+  //https://stackoverflow.com/questions/40858942/identifier-has-already-been-declared
+  const response = await axios.post(url, body3, config)
+  console.log(response.data)
+  return response.data
+}
 app.action('poc_checkbox', async ({ ack, body, client }) => {
   try {
     await ack();
@@ -3153,70 +3300,31 @@ function updateModalView_netnew(body) {
             {
               text: {
                 type: "plain_text",
-                text: "us-central-1 (lowa)",
+                text: "us-gov-west-1(US West)",
                 emoji: true
               },
-              value: "us-central1"
+              value: "us-gov-west-1"
             },
             {
               text: {
                 type: "plain_text",
-                text: "northamerica-northeast1 (Montrreal)",
+                text: "us-gov-east-1(US East)",
                 emoji: true
               },
-              value: "northamerica-northest1"
+              value: "us-gov-east-1"
             },
-            {
-              text: {
-                type: "plain_text",
-                text: "europe-west1 (Belgium)",
-                emoji: true
-              },
-              value: "europe-west1"
-            },
-            {
-              text: {
-                type: "plain_text",
-                text: "europe-west3 (Frankfrut)",
-                emoji: true
-              },
-              value: "europe-west3"
-            },
-            {
-              text: {
-                type: "plain_text",
-                text: "europe-west2 (London)",
-                emoji: true
-              },
-              value: "europe-west2"
-            },
-            {
-              text: {
-                type: "plain_text",
-                text: "asia-southeast1 (Singapore)",
-                emoji: true
-              },
-              value: "asia-southeast1"
-            },
-            {
-              text: {
-                type: "plain_text",
-                text: "australia-southeast1 (Syndney)",
-                emoji: true
-              },
-              value: "australia-southeast1"
-            },
-
-
+            
+  
+  
           ],
           action_id: "region_input",
           initial_option: {
             text: {
               type: "plain_text",
-              text: "us-central-1 (lowa)",
+              text: "us-gov-west-1(US West)",
               emoji: true
             },
-            value: "us-central1"
+            value: "us-gov-west-1"
           },
         },
         label: {
@@ -3227,12 +3335,12 @@ function updateModalView_netnew(body) {
       }, 
       {
         type: "input",
-        block_id: 'redramp_type',
+        block_id: 'fedramp_type',
         element: {
           type: "static_select",
           placeholder: {
             type: "plain_text",
-            text: "Select a FredRamp Type",
+            text: "Select a Fedramp Type",
             emoji: true
           },
           options: [
@@ -3258,12 +3366,12 @@ function updateModalView_netnew(body) {
                 text: "IL5",
                 emoji: true
               },
-              value: "il5"
+              value: "IL5"
             },
   
   
           ],
-          action_id: "region_input",
+          action_id: "fedramp_type_input",
           initial_option: {
             text: {
               type: "plain_text",
@@ -3292,10 +3400,10 @@ function updateModalView_netnew(body) {
             {
               text: {
                 type: "plain_text",
-                text: "U.S. Gov: DOD/IC",
+                text: "U.S. Gov: DoD / IC",
                 emoji: true
               },
-              value: "u.s.gov:dod/ic"
+              value: "U.S. Gov: DoD / IC"
             },
             {
               text: {
@@ -3303,7 +3411,7 @@ function updateModalView_netnew(body) {
                 text: "State and Local Gov",
                 emoji: true
               },
-              value: "state and local gov"
+              value: "State and Local Govv"
             },
             {
               text: {
@@ -3311,7 +3419,7 @@ function updateModalView_netnew(body) {
                 text: "Non-Government",
                 emoji: true
               },
-              value: "non-government"
+              value: "Non-Government"
             },
   
   
@@ -3320,10 +3428,10 @@ function updateModalView_netnew(body) {
           initial_option: {
             text: {
               type: "plain_text",
-              text: "U.S. Gov: DOD/IC",
+              text: "U.S. Gov: DoD / IC",
               emoji: true
             },
-            value: "u.s.gov:dod/ic"
+            value: "U.S. Gov: DoD / IC"
           },
         },
         label: {
@@ -3482,6 +3590,9 @@ app.view('p2splunk-submit', async ({ ack, body, view, client }) => {
     response = await sendRequest_aws(body);
   } else if (cloud_provider == "gcp") {
     response = await sendRequest_gcp(body);
+  }else if (cloud_provider == "fedramp"){
+    console.log("========")
+    response = await sendRequest_fedramp(body);
   }
   console.log(JSON.stringify(response));
   //http call to local co2
